@@ -63,10 +63,13 @@ class Slash(slash.ApplicationCog):
         embed_3.add_field(title="If your opponent doesn’t place their checker in the center column with the first move of the game:", value="that should be your initial move when it’s your turn because the space offers the best advantage in the game.", inline=False)
         embed_3.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862914134827466783/SmartSelect_20210709-002740_Discord-Beta.jpg")
 
+        global page
+        page_embed = [embed_1, embed_2, embed_3][page]
+        page_embed.set_footer(text=f"{page} / 3 | Connect 4 2021", icon_url=ctx.author.avatar.url)
+
         while True:
-            global page
             view = HTP_view(ctx.author, page)
-            await ctx.send(embed=[embed_1, embed_2, embed_3][page], view=view)
+            await ctx.send(embed=page_embed, view=view)
             await view.wait()
 
             if view.quit: break
