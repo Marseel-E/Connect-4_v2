@@ -58,7 +58,9 @@ class Slash(slash.ApplicationCog):
         embed_2.add_field(title="There are three ways to get four checkers in a row:", value="horizontally, vertically, and diagonally.", inline=False)
         embed_2.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862914973347872808/SmartSelect_20210709-003600_Discord-Beta.jpg")
         
-        # embed_3 = ["Placing the first checker in the middle column doesn’t guarantee a win.\s You still have to avoid making mistakes along the way.\s False", "If you choose a column other than the middle for your first move:\s it becomes easier for your opponent to force a tie.\s False", "If your opponent doesn’t place their checker in the center column with the first move of the game:\s that should be your initial move when it’s your turn because the space offers the best advantage in the game.\s False"]  
+        embed_3.add_field(title="Placing the first checker in the middle column doesn’t guarantee a win.", value="You still have to avoid making mistakes along the way.", inline=False)
+        embed_3.add_field(title="If you choose a column other than the middle for your first move:", value="it becomes easier for your opponent to force a tie.", inline=False)
+        embed_3.add_field(title="If your opponent doesn’t place their checker in the center column with the first move of the game:", value="that should be your initial move when it’s your turn because the space offers the best advantage in the game.", inline=False)
         embed_3.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862914134827466783/SmartSelect_20210709-002740_Discord-Beta.jpg")
 
         while True:
