@@ -53,7 +53,7 @@ class Slash(slash.ApplicationCog):
         # embed_1 = ["You want to choose each move carefully because your opponent will have a turn after you.\s Not only do they have a chance to thwart your strategy for four in row, your move can sometimes make it easier for them to get four of their checkers in a row.\s False", "If you have the first turn in the game:\s your opponent will probably be responding to your moves and attempting to block you from getting four checkers in row.\s False", "If you have the second turn of the game:\s you’ll likely be on the defensive, trying to keep your opponent from getting their checkers in row.\s False"]
         embed_1.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862915639227973632/SmartSelect_20210709-003839_Discord-Beta.jpg")
         
-        # embed_2 = ["There are three ways to get four checkers in a row:\s horizontally, vertically, and diagonally.\s False"]  
+        embed_2.add_field(title="There are three ways to get four checkers in a row:", value="horizontally, vertically, and diagonally.", inline=False)
         embed_2.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862914973347872808/SmartSelect_20210709-003600_Discord-Beta.jpg")
         
         # embed_3 = ["Placing the first checker in the middle column doesn’t guarantee a win.\s You still have to avoid making mistakes along the way.\s False", "If you choose a column other than the middle for your first move:\s it becomes easier for your opponent to force a tie.\s False", "If your opponent doesn’t place their checker in the center column with the first move of the game:\s that should be your initial move when it’s your turn because the space offers the best advantage in the game.\s False"]  
