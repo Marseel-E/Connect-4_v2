@@ -43,7 +43,7 @@ class Slash(slash.ApplicationCog):
         self.bot = bot
 
 
-    @slash.command(name=how-to-play)
+    @slash.command(name="how-to-play", guild_id=879153063036858428)
     @slash.describe("How to play Connect 4")
     async def how_to_play(self, ctx : slash.Context):
         embed_1 = Embed(title="How To Play - Basics", description="Connect 4 is a definite classic. Playing against an opponent, you try to be the first to place four discs in a row on the game board. While figuring out game winning strategy can sometimes be challenge, the game is simple enough to play. If you're gearing up for your first game, you'll get the hang of it in no time, especially if you're familiar with Tic-Tac-Toe.\nConnect 4 has 7 columns and 6 rows to choose from. You can choose any of the columns, depending on your strategy. When its your turn you pick a column to drop your piece in.", color=int("5261f8", 16))
