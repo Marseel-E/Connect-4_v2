@@ -1,6 +1,6 @@
 from discord import Embed
 import slash_util as slash
-from typing import Optional
+from typing import Optional, Literal
 
 from database.main import *
 from .play_slash import Backend
@@ -14,11 +14,7 @@ class Game_slash(slash.Cog):
 	# guild_id=879153063036858428
 	@slash.slash_command()
 	@slash.describe(leaderboard_type="Wins, loses, or Draws")
-	async def leaderboard(self, ctx : slash.Context, leaderboard_type : str = 'wins'):
-		if leaderboard_type.lower() not in ['wins', 'loses', 'draws']:
-			await ctx.send(f"`leaderboard_type` can only be `wins`, `loses`, or `draws`", ephemeral=True)
-			return
-
+	async def leaderboard(self, ctx : slash.Context, leaderboard_type : Literal['wins', 'loses', 'draws'] = 'wins'):
 		users = {}
 
 		for user in [user for user in User.find(User.ID != '0').all()]:
