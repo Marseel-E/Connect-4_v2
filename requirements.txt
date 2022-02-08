@@ -1,3 +1,4 @@
+redis
 git+https://github.com/Rapptz/discord.py 
 slash_util
 python-dotenv
