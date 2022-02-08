@@ -5,4 +5,3 @@ slash_util
 python-dotenv
 humanize
 dblpy
-random
