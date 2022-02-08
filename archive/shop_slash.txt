@@ -1,0 +1,130 @@
+from discord import slash, Interaction, ButtonStyle, ui, Embed, SelectOption
+
+from database.main import *
+from backend.items import items as all_items
+
+
+page = 1
+category = None
+
+
+class Shop_buy(ui.Select):
+	def __init__(self, user):
+		self.user = user
+		global category
+
+		options = [SelectOption(label=key.capitalize(), description=f"{value['price']} :coin:") for key, value in all_items[category].items() if value['price'] <= user.coins]
+
+		super().__init__(placeholder="Buy", min_values=1, max_values=1, options=options)
+
+	async def callback(self, interaction : Interaction):
+		await interaction.response.send_message(f"Bought {self.values[0].capitalize()}", ephemeral=True)
+		self.view.stop()
+
+class Shop_category(ui.Select):
+	def __init__(self):
+		options = [SelectOption(label=category.capitalize(), description=f"Buy {category}") for category in ['discs', 'backgrounds', 'embed_colors']]
+
+		super().__init__(placeholder="Category", min_values=1, max_values=1, options=options)
+
+	async def callback(self, interaction : Interaction):
+		global category
+		category = self.values[0].lower()
+		self.view.stop()
+
+
+class Shop_view(ui.View):
+	def __init__(self, author):
+		super().__init__()
+		self.quit = True
+		self.author = author
+
+	async def interaction_check(self, interaction : Interaction):
+		return interaction.user.id == self.author.id
+
+	@ui.button(label="◀", style=ButtonStyle.gray)
+	async def previous(self, button : ui.Button, interaction : Interaction):
+		global page
+		page += 1
+		self.quit = False
+		self.stop()
+
+	@ui.button(label="▶", style=ButtonStyle.gray)
+	async def next(self, button : ui.Button, interaction : Interaction):
+		global page
+		page += 1
+		self.quit = False
+		self.stop()
+
+
+class Shop_slash(slash.ApplicationCog):
+	def __init__(self, bot):
+		self.bot = bot
+
+
+	@slash.slash_command(guild_id=879153063036858428)
+	async def shop(self, ctx : slash.Context):
+		user = User.find(User.ID == str(ctx.author.id)).first()
+
+		print("got user")
+
+		view = Shop_view(ctx.author)
+		view.clear_items()
+		view.add_item(Shop_category())
+
+		print("created view")
+
+		msg = await ctx.send("Choose a category", view=view)
+		await view.wait()
+
+		print("send msg with category")
+
+		global category
+		if category == None:
+			await msg.delete()
+			await ctx.send(":warning: something went wrong :warning:", ephemeral=True)
+			return
+
+		print("category exists")
+
+		while True:
+			print("shop loop")
+
+			global page
+
+			description = ""
+			for key, value in all_items[category].items():
+				if list(all_items[category].keys()).index(key) > (page * 10): break
+				description += f"{value['icon']} - {key.capitalize()} ({value['price']} :coin:)\n"
+
+			embed = Embed(title=f"Shop - {category.capitalize()}", description=description, color=int("5261f8", 16))
+
+			print("created embed")
+
+			embed.set_footer(text=f"Page: {page} / {round(len(all_items[category]) / 10)} | Connect 4 © 2021", icon_url=ctx.author.avatar.url)
+
+			print("set embed footer")
+
+			view = Shop_view(ctx.author)
+			view.add_item(Shop_buy(user))
+			view.next.disabled = True if (page >= (len(all_items[category]) * 10)) else False
+			view.previous.disabled = True if (page <= 1) else False
+
+			print("created view")
+
+			await msg.edit(content="", embed=embed, view=view)
+			await view.wait()
+
+			print("sent shop message")
+
+			if view.quit: break
+
+			print("didn't quit")
+
+		await msg.delete()
+
+		print("message finished")
+
+
+def setup(bot):
+	bot.add_cog(Shop_slash(bot))

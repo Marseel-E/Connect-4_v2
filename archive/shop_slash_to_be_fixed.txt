@@ -1,0 +1,87 @@
+from discord import slash, Embed, ui, Interaction, SelectOption, ButtonStyle
+
+from database.main import *
+from backend.items import items as all_items
+
+
+category = None
+
+class Shop_category_dropdown(ui.Select):
+	def __init__(self):
+		options = [SelectOption(label=option.capitalize(), description=f"Buy {option}") for option in ["discs", "backgrounds", "embed_colors"]]
+
+		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
+
+	async def callback(self, interaction : Interaction):
+		await interaction.response.send_message(self.values[0], ephemeral=True)
+		global category
+		category = self.values[0]
+		self.view.stop()
+
+class Shop_category_view(ui.View):
+	def __init__(self, user):
+		super().__init__()
+		self.user = user
+
+		self.add_item(Shop_category_dropdown())
+
+	async def interaction_check(self, interaction : Interaction):
+		return (interaction.user.id == self.user.ID)
+
+
+class Shop_buy_dropdown(ui.Select):
+	def __init__(self, user):
+		self.user = user
+
+		global category
+		options = [SelectOption(label=key, description=f"{value['price']} :coin:") for key, value in all_items[category] if (value['price'] <= user.coins) or (value['price'] > 0)]
+
+		super().__init__(placeholder="Buy", min_values=1, max_values=1, options=options)
+
+	async def callback(self, interaction : Interaction):
+		await interaction.response.send_message(f"Bought `{self.values[0]}`", ephemeral=True)
+		self.view.stop()
+
+class Shop_view(ui.View):
+	def __init__(self, user):
+		super().__init__()
+		self.user = user
+
+		self.add_item(Shop_buy_dropdown(self.user))
+
+	async def interaction_check(self, interaction : Interaction):
+		return (interaction.user.id == self.user.ID)
+
+
+class Shop_slash(slash.ApplicationCog):
+	def __init__(self, bot):
+		self.bot = bot
+
+	@slash.slash_command(guild_id=879153063036858428)
+	async def shop(self, ctx : slash.Context):
+		user = User.find(User.ID == str(ctx.author.id)).first()
+		
+		view = Shop_category_view(user)
+		msg = await ctx.send("Category?", view=view)
+		await view.wait()
+
+		global category
+
+		if (category == None):
+			await msg.delete()
+			await ctx.send(":warning: something went wrong :warning:", ephemeral=True)
+			return
+
+		description = ""
+		for key, value in all_items[category].items():
+			description += f"{value['icon']} - {key.capitalize()} ({value['price']} :coin:)\n"
+
+		view = Shop_view(user)
+		embed = Embed(title=f"Shop - {category.capitalize()}", description=description, color=int("5261f8", 16))
+
+		await msg.edit(content="", embed=embed, view=view)
+		await view.wait()
+
+
+def setup(bot):
+	bot.add_cog(Shop_slash(bot))
