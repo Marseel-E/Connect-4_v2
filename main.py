@@ -8,7 +8,11 @@ from dotenv import load_dotenv
 load_dotenv('.env')
 
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
+intents.guilds=True
+intents.members=True
+intents.reactions=True
+
 bot = slash.Bot(command_prefix=commands.when_mentioned_or('-'), case_sensitive=True, intents=intents)
 
 
