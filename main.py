@@ -26,7 +26,7 @@ async def on_ready():
 async def on_message(message):
     if (message.author.bot): return
 
-    if bot.user.mentioned_in(message): await message.channel.send('prefix: "`-`"'); return
+    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear."); return
 
     users = fetch_users()
     if str(message.author.id) in users:

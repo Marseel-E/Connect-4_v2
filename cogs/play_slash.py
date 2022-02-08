@@ -192,8 +192,8 @@ class Slash_play(slash.Cog):
 			await ctx.send("No- just no.. you cant play with yourself.", ephemeral=True)
 			return
 
-		player = User.find(User.ID == str(ctx.author.id)).first()
-		opponent = User.find(User.ID == str(member.id)).first()
+		player = User.find(User.ID == str(ctx.author.id)).first() if str(ctx.author.id) in fetch_users() else User(ID=str(ctx.author.id), coins=1000).save()
+		opponent = User.find(User.ID == str(member.id)).first() if str(member.id) in fetch_users() else User(ID=str(member.id), coins=1000)
 
 		if (player.playing or opponent.playing):
 			await ctx.send("You're playing another game", ephemeral=True)

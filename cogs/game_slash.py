@@ -37,7 +37,7 @@ class Game_slash(slash.Cog):
 			
 			description += f"{users.index(i)+1}. **{user}** - `{i[1]}`\n"
 
-		user = User.find(User.ID == str(ctx.author.id)).first()
+		user = User.find(User.ID == str(ctx.author.id)).first() if str(ctx.author.id) in fetch_users() else User(ID=str(ctx.author.id), coins=1000).save()
 
 		embed = Embed(title=f"Leaderboard - {leaderboard_type.capitalize()}", description=description, color=int("5261f8", 16))
 		embed.set_footer(text=f"Your rank: {users.index((str(ctx.author.id), user.stats[leaderboard_type])) + 1}", icon_url=ctx.author.avatar.url)
@@ -48,6 +48,8 @@ class Game_slash(slash.Cog):
 	# guild_id=879153063036858428
 	@slash.slash_command()
 	async def board(self, ctx : slash.Context):
+		if str(ctx.author.id) not in fetch_users(): return
+
 		user = User.find(User.ID == str(ctx.author.id)).first()
 
 		if not user.playing: await ctx.send(f"{ctx.author.mention}, Your not playing.", ephemeral=True); return

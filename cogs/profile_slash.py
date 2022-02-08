@@ -22,7 +22,7 @@ class Profile_slash(slash.Cog):
 		
 		if str(discord_user.id) not in fetch_users():
 			if member: await ctx.send('This user has no profile'); return
-			else: User(ID=str(discord_user.id)).save()
+			else: User(ID=str(discord_user.id), coins=1000).save()
 
 		user = User.find(User.ID == str(discord_user.id)).first()
 
