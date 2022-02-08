@@ -1,5 +1,6 @@
 from discord import ui, Embed, ButtonStyle, Member, SelectOption, Interaction
 import slash_util as slash
+import random
 
 from database.main import *
 
@@ -186,19 +187,13 @@ class Slash_play(slash.Cog):
 	# guild_id=879153063036858428
 	@slash.slash_command()
 	@slash.describe(member="Your opponent", bet="Your bet")
-	async def play(self, ctx : slash.Context, member : Member, bet : int = 0, force : bool = False):
+	async def play(self, ctx : slash.Context, member : Member, bet : int = 0):
 		if (member.id == ctx.author.id):
 			await ctx.send("No- just no.. you cant play with yourself.", ephemeral=True)
 			return
 
 		player = User.find(User.ID == str(ctx.author.id)).first()
 		opponent = User.find(User.ID == str(member.id)).first()
-
-		if (force):
-			player.update(playing=False)
-			player.update(coins=bet)
-			opponent.update(playing=False)
-			opponent.update(coins=bet)
 
 		if (player.playing or opponent.playing):
 			await ctx.send("You're playing another game", ephemeral=True)
