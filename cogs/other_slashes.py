@@ -27,7 +27,7 @@ class Other_slashes(slash.Cog):
 		games = 0
 		for user in users:
 			user = User.find(User.ID == str(user)).first()
-			games = sum(list(user.stats.values()))
+			games += sum(list(user.stats.values()))
 
 		emojis = [f"<:{emoji.name}:{emoji.id}>" for emoji in self.bot.emojis]
 		
@@ -36,10 +36,9 @@ class Other_slashes(slash.Cog):
 		embed.set_thumbnail(url=self.bot.user.display_avatar)
 
 		embed.add_field(name="Creator:", value=f"[{owner}](https://discord.com/users/{owner.id})", inline=False)
-		embed.add_field(name="Guilds:", value=f"`{len(fetch_guilds())}`", inline=False)
+		embed.add_field(name="Guilds:", value=f"`{len(self.bot.guilds)}`", inline=False)
 		embed.add_field(name="Users:", value=f"`{len(users)}`", inline=False)
-		embed.add_field(name="Games:", value=f"`{len(fetch_games())}`", inline=False)
-		embed.add_field(name="Commands:", value=f"`{len(self.bot.commands)}`", inline=False)
+		embed.add_field(name="Games:", value=f"`{games}`", inline=False)
 		embed.add_field(name=f"Emojis: `({len(self.bot.emojis)})`", value=''.join(emojis[:30]), inline=False)
 
 		await ctx.send(embed=embed, ephemeral=True)
