@@ -14,7 +14,8 @@ class Developer(commands.Cog):
 
 
 	def get_user(self, id):
-		return User.find(User.ID == id).first()
+		if str(id) not in fetch_users(): User(ID=str(id)).save()
+		return User.find(User.ID == str(id)).first()
 
 	def get_game(self, game_id : str):
 		return Game.find(Game.ID == game_id).first()
