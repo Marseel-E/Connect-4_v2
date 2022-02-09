@@ -13,13 +13,13 @@ intents.guilds=True
 intents.members=True
 intents.reactions=True
 
-bot = slash.Bot(command_prefix="-", case_sensitive=True, intents=intents)
+bot = slash.Bot(command_prefix="c-", case_sensitive=True, intents=intents)
 
 
 @bot.event
 async def on_ready():
     print("running...")
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("-help"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("c-help"))
 
 
 @bot.event
