@@ -25,7 +25,7 @@ async def on_ready():
 async def on_message(message):
     if (message.author.bot): return
 
-    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know."); return
+    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know."); return
 
     users = fetch_users()
     if str(message.author.id) in users:
@@ -45,7 +45,7 @@ async def on_message(message):
 bot.remove_command("help")
 @bot.command(aliases=["?", "h"])
 async def help(ctx):
-    await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know.")
+    await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know.")
 
 
 if __name__ == ('__main__'):
