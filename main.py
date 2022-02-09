@@ -1,4 +1,4 @@
-import discord, os, random, typing
+import discord, os, random, typing, topgg
 import slash_util as slash
 from discord.ext import commands
 
@@ -41,6 +41,14 @@ async def on_message(message):
             await message.channel.send(f":tada: LEVEL UP! :tada:\nLevel: {user.level + 1}\nCoins: {user.coins + 1}")
 
     await bot.process_commands(message)
+
+
+bot.topggpy = topgg.DBLClient(bot, os.environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
+
+@bot.event
+async def on_autopost_success():
+    print(f"Posted server count ({bot.topggpy.guild_count}), shard count ({bot.shard_count})")
+
 
 bot.remove_command("help")
 @bot.command(aliases=["?", "h"])
