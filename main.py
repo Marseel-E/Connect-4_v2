@@ -13,20 +13,21 @@ intents.guilds=True
 intents.members=True
 intents.reactions=True
 
-bot = slash.Bot(command_prefix=commands.when_mentioned_or('-'), case_sensitive=True, intents=intents)
+bot = slash.Bot(command_prefix="-", case_sensitive=True, intents=intents)
 
 
 @bot.event
 async def on_ready():
     print("running...")
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("connect-4.exe"))
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game("-help"))
 
 
 @bot.event
 async def on_message(message):
     if (message.author.bot): return
 
-    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"'+ " and selecting your server. If you're not the server owner please let him know."); return
+    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know."); return
+
     users = fetch_users()
     if str(message.author.id) in users:
         user = User.find(User.ID == str(message.author.id)).first()
@@ -41,6 +42,12 @@ async def on_message(message):
             await message.channel.send(f":tada: LEVEL UP! :tada:\nLevel: {user.level + 1}\nCoins: {user.coins + 1}")
 
     await bot.process_commands(message)
+
+
+bot.remove_command("help")
+@commands.command(aliases=["?", "h"])
+async def help(ctx):
+    await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know.")
 
 
 if __name__ == ('__main__'):

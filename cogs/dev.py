@@ -1,6 +1,7 @@
 import discord, sys, traceback, typing, os, asyncio
 from discord.ext import commands
 from io import StringIO
+from typing import Optional
 
 from database.main import *
 
@@ -9,8 +10,8 @@ def is_dev(ctx): return ctx.author.id == 470866478720090114
 
 
 class Developer(commands.Cog):
-	def __init__(self, client):
-		self.client = client
+	def __init__(self, bot):
+		self.bot = bot
 
 
 	def get_user(self, id):
@@ -57,6 +58,57 @@ class Developer(commands.Cog):
 				embed = discord.Embed(description=f"Input:\n```py\n{cmd}\n```\nOutput:\n```bash\n{msg[i:i+2000]}\n```")
 				await ctx.send(embed=embed)
 
+	@commands.command()
+	@commands.is_owner()
+	async def load(self, ctx, cog : Optional[str] = None):
+		if not (cog):
+			for cog in os.listdir("cogs"):
+				if not (cog.endswith(".py")) or (cog.startswith("dev")): continue
 
-def setup(client):
-	client.add_cog(Developer(client))
+				try: self.bot.load_extension(f"cogs.{cog[:-3]}")
+				except Exception as e: await ctx.author.send(f"[Main]: Failed to load '{cog[:-3]}': {e}")
+				else: await ctx.send(f"[{cog[:-3]}]: Loaded..")
+
+			return
+
+		try: self.bot.load_extension(f"cogs.{cog}")
+		except Exception as e: await ctx.author.send(f"[Main]: Failed to load '{cog}': {e}")
+		else: await ctx.send(f"[{cog}]: Loaded..")
+
+	@commands.command()
+	@commands.is_owner()
+	async def unload(self, ctx, cog : Optional[str] = None):
+		if not (cog):
+			for cog in os.listdir("cogs"):
+				if not (cog.endswith(".py")) or (cog.startswith("dev")): continue
+
+				try: self.bot.unload_extension(f"cogs.{cog[:-3]}")
+				except Exception as e: await ctx.author.send(f"[Main]: Failed to unload '{cog[:-3]}': {e}")
+				else: await ctx.send(f"[{cog[:-3]}]: Unloaded..")
+
+			return
+
+		try: self.bot.unload_extension(f"cogs.{cog}")
+		except Exception as e: await ctx.author.send(f"[Main]: Failed to unload '{cog}': {e}")
+		else: await ctx.send(f"[{cog}]: Unloaded..")
+
+	@commands.command()
+	@commands.is_owner()
+	async def reload(self, ctx, cog : Optional[str] = None):
+		if not (cog):
+			for cog in os.listdir("cogs"):
+				if not (cog.endswith(".py")): continue
+
+				try: self.bot.reload_extension(f"cogs.{cog[:-3]}")
+				except Exception as e: await ctx.author.send(f"[Main]: Failed to reload '{cog[:-3]}': {e}")
+				else: await ctx.send(f"[{cog[:-3]}]: Reloaded..")
+
+			return
+
+		try: self.bot.reload_extension(f"cogs.{cog}")
+		except Exception as e: await ctx.author.send(f"[Main]: Failed to reload '{cog}': {e}")
+		else: await ctx.send(f"[{cog}]: Reloaded..")
+
+
+def setup(bot):
+	bot.add_cog(Developer(bot))
