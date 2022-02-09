@@ -11,7 +11,7 @@ OWNER = '470866478720090114'
 
 class User(JsonModel):
 	ID             : str = Field(index=True)
-	coins          : Optional[int] = 0
+	coins          : Optional[int] = 1000
 	exp            : Optional[int] = 0
 	level          : Optional[int] = 1
 	playing        : Optional[bool] = False
@@ -39,7 +39,7 @@ class Game(JsonModel):
 
 class Guild(HashModel):
 	ID     : str = Field(index=True)
-	prefix : Optional[str] = '.'
+	prefix : Optional[str] = 'c-'
 	class Meta:
 		database = redis
 
