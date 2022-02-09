@@ -15,7 +15,6 @@ intents.reactions=True
 
 bot = slash.Bot(command_prefix="c-", case_sensitive=True, intents=intents, help_command=None)
 
-
 @bot.event
 async def on_ready():
     print("running...")
@@ -43,9 +42,9 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-
-@slash.message_command(guild_id=843994109366501376)
-async def help(ctx : slash.Context):
+bot.remove_command("help")
+@commands.command(aliases=["help", "?", "h"])
+async def new_help(ctx):
     await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know.")
 
 
