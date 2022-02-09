@@ -43,8 +43,8 @@ async def on_message(message):
     await bot.process_commands(message)
 
 bot.remove_command("help")
-@commands.command(aliases=["help", "?", "h"])
-async def new_help(ctx):
+@bot.command(aliases=["?", "h"])
+async def help(ctx):
     await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let him know.")
 
 
