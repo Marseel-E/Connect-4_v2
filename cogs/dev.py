@@ -4,6 +4,8 @@ from io import StringIO
 from typing import Optional
 
 from backend.tools import *
+from backend.items import items as all_items
+
 from database.main import *
 
 
