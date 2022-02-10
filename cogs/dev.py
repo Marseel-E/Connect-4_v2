@@ -23,16 +23,17 @@ class Developer(commands.Cog):
 		return Game.find(Game.ID == game_id).first()
 
 
-        @commands.command(aliases=['t'])
-        @commands.is_owner()
-        async def talk(self, ctx, msg, *evaluate : Optional[bool] = False, *embeded : Optional[bool] = False):
-            try: msg = eval(msg) if (evaluate) else msg
-            except Exception as e: await ctx.send(f"INPUT:\n```py\n{msg}\n```\nOUTPUT:\n```bash\n{e}\n```"); return
-            
-            if not (embeded): await ctx.send(msg); return
-            
-            embed = discord.Embed(description=msg, color=Color.default)
-            await ctx.send(embed=embed)
+	@commands.command(aliases=['t'])
+	@commands.is_owner()
+	async def talk(self, ctx, msg, *evaluate : Optional[bool] = False, *embeded : Optional[bool] = False):
+		try: msg = eval(msg) if (evaluate) else msg
+		except Exception as e: await ctx.send(f"INPUT:\n```py\n{msg}\n```\nOUTPUT:\n```bash\n{e}\n```"); return
+
+		if not (embeded): await ctx.send(msg); return
+
+		embed = discord.Embed(description=msg, color=Color.default)
+		await ctx.send(embed=embed)
+
 
 	@commands.command(aliases=['cu'])
 	@commands.is_owner()
