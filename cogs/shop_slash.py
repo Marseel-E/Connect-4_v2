@@ -52,17 +52,15 @@ class Shop_slash(slash.Cog):
 	async def shop(self, ctx : slash.Context, category : Literal['Discs', 'Backgrounds']):
 		user = User.find(User.ID == str(ctx.author.id)).first() if (str(ctx.author.id) in fetch_users()) else User(ID=str(ctx.author.id)).save()
 
-		embed = Embed(title=f"{category} shop", color=Color.default)	
+		embed = Embed(title=f"{category} shop", description=f"Coins: {user.coins} :coin:\n\n", color=Color.default)
 
-		description = f"Coins: {user.coins} :coin:\n\n"
 		for key, value in all_items[category.lower()].items():
 			if (value['price'] <= 0): continue
 
 			name = f"**{key.replace('_', ' ').capitalize()}**"
 			if (value['price'] > user.coins): name = f"~~{key.replace('_', ' ').capitalize()}~~"
 
-			description += f"{value['icon']} - {name} `({value['price']}`:coin:`)`\n"
-		embed.description = description
+			embed.description += f"{value['icon']} - {name} `({value['price']}`:coin:`)`\n"
 
 		if (user.coins <= 999): await ctx.send(embed=embed, ephemeral=True); return
 
