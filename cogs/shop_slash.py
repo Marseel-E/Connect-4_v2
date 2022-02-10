@@ -6,7 +6,7 @@ class Shop_slash(slash.Cog):
 		self.bot = bot
 
 
-	@slash.slash_command()
+	@slash.slash_command(guild_id=843994109366501376)
 	async def shop(self, ctx : slash.Context):
 		await ctx.send("Soon...", ephemeral=True)
 

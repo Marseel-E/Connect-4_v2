@@ -17,32 +17,19 @@ class Disc_placements(ui.Select):
 
 		super().__init__(placeholder="Primary or Secondary?", min_values=1, max_values=1, options=options)
 
-	async def callback(self, select : ui.Select, interaction : Interaction):
-		self.view.primary_disc = True if select.values[0].lower() == "primary" else False
+	async def callback(self,interaction : Interaction):
+		self.view.primary_disc = True if self.values[0].lower() == "primary" else False
 		self.view.stop()
 
 
 class Select_item(ui.Select):
-	def __init__(self, items):
-		self.items = items
-		options = [SelectOption(label=item.replace('_', ' ').capitalize(), description="") for item in self.items if (item not in [self.view.user.primary_disc, self.view.user.secondary_disc, self.view.user.background, self.view.user.embed_color])]
+	def __init__(self, user, category):
+		options = [SelectOption(label=item.replace('_', ' ').capitalize(), description="") for item in user.inventory[category] if not (all_items[category][item]['icon'] in [user.primary_disc, user.secondary_disc, user.background, user.embed_color])]
 
 		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
 
-	async def callback(self, select : ui.Select, interaction : Interaction):
-		self.view.value = select.values[0].lower().replace(' ', '_')
-		self.view.stop()
-
-
-class Use_button(ui.Button):
-	def __init__(self):
-		super().__init__(label="Use", style=ButtonStyle.blurple)
-
-	async def callback(self, button : ui.Button, interaction : Interaction):
-		print(self.view)
-		print(self.view.value)
-		self.view.value == "use"
-		button.disabled = True
+	async def callback(self, interaction : Interaction):
+		self.view.value = self.values[0].lower().replace(' ', '_')
 		self.view.stop()
 
 
@@ -54,7 +41,7 @@ class Inv_view(ui.View):
 		self.user = user
 
 	async def interaction_check(self, interaction : Interaction):
-		return str(interaction.user.id) == self.user.ID
+		return (str(interaction.user.id) == self.user.ID)
 
 
 class Inv_slash(slash.Cog):
@@ -73,44 +60,36 @@ class Inv_slash(slash.Cog):
 
 		embed = Embed(title="Inventory", description=items, color=Color.default)
 
+		if (User(ID="0").inventory[category] == user.inventory[category]): await ctx.send(embed=embed, ephemeral=True); return
+		
 		view = Inv_view(user)
-		view.add_item(Use_button())
+		view.add_item(Select_item(user, category))
 
 		msg = await ctx.send(embed=embed, view=view)
 		await view.wait()
 
 		if view.value == None: await msg.delete(); return
-		await ctx.send(view.value, ephemeral=True)
-
-		view.clear_items()
-		view.add_item(Select_item(user.inventory[category]))
-
-		await msg.edit(embed=embed, view=view)
-		await view.wait()
-
-		if view.value == None: await msg.edit(); return
 
 		new_item = all_items[category][view.value]['icon']
-
 		if (category == "discs"):
-			view.clear_items()
+			view = Inv_view(user)
 			view.add_item(Disc_placements())
 
-			await msg.edit(content="", embed=Embed.Empty, view=view, ephemeral=True)
+			await msg.edit(content="Where?", embed=None, view=view)
 			await view.wait()
 
 			if (view.primary_disc):
 				user.update(primary_disc=new_item)
 				placement = "primary "
-			
+
 			else:
 				user.update(secondary_disc=new_item)
 				placement = "seconadry "
 
-		if (category == "backgrounds"): user.update(background=new_item)
+		if (category == "backgrounds"): user.update(background=new_item); print(18)
 
-		view.clear_items()
-		await msg.edit(content=f"{new_item} is your new `{placement}{category[:-1]}`", embed=Embed.Empty, view=view, ephemeral=True)
+		await msg.delete()
+		await ctx.send(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
 
 
 def setup(bot):
