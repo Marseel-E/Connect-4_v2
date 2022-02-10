@@ -25,7 +25,7 @@ class Developer(commands.Cog):
 
 	@commands.command(aliases=['t'])
 	@commands.is_owner()
-	async def talk(self, ctx, msg, *evaluate : Optional[bool] = False, *embeded : Optional[bool] = False):
+	async def talk(self, ctx, msg, evaluate : Optional[bool] = False, embeded : Optional[bool] = False):
 		try: msg = eval(msg) if (evaluate) else msg
 		except Exception as e: await ctx.send(f"INPUT:\n```py\n{msg}\n```\nOUTPUT:\n```bash\n{e}\n```"); return
 
