@@ -93,6 +93,10 @@ items = {
             "icon": "<:kek:848798371170222121>",
             "price": 0,
         },
+        "owner": {
+            "icon": "<:owner:848803588066377778>",
+            "price": 0,
+        },
     },
 
     "backgrounds": {
