@@ -9,10 +9,6 @@ load_dotenv('.env')
 
 
 intents = discord.Intents.default()
-intents.guilds=True
-intents.members=True
-intents.reactions=True
-
 bot = slash.Bot(command_prefix="c-", case_sensitive=True, intents=intents, help_command=None)
 
 @bot.event
