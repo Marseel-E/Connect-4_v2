@@ -12,7 +12,8 @@ class Color:
 Color = Color()
 
 
-support_server = "[Support Server](https://discord.gg/JgR6XywMwZ)"
+support_server_link = "https://discord.gg/DFDUpXJNdc"
+support_server = f"[Support Server]({self.support_server_link})"
 default_bot = "[Bot](https://top.gg/bot/795099690609279006)"
 
 
