@@ -48,8 +48,8 @@ class Inv_slash(slash.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-
-	@slash.slash_command(guild_id=843994109366501376)
+# guild_id=843994109366501376
+	@slash.slash_command()
 	async def inventory(self, ctx : slash.Context, category : Literal['Discs', 'Backgrounds']):
 		user = User.find(User.ID == str(ctx.author.id)).first() if str(ctx.author.id) in fetch_users() else User(ID=str(ctx.author.id)).save()
 		category = category.lower().replace(' ', '_')
