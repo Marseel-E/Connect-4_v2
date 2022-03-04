@@ -1,7 +1,7 @@
 redis
 redis-om
 git+https://github.com/Rapptz/discord.py
-​git+https://github.com/XuaTheGrate/slash_util
+git+https://github.com/XuaTheGrate/slash_util
 python-dotenv
 humanize
 topggpy
