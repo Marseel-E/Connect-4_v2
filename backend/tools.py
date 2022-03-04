@@ -13,7 +13,7 @@ Color = Color()
 
 
 support_server_link = "https://discord.gg/DFDUpXJNdc"
-support_server = f"[Support Server]({self.support_server_link})"
+support_server = f"[Support Server]({support_server_link})"
 default_bot = "[Bot](https://top.gg/bot/795099690609279006)"
 
 
