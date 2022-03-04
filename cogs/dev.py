@@ -24,11 +24,11 @@ class Developer(commands.Cog):
 	def get_game(self, game_id : str):
 		return Game.find(Game.ID == game_id).first()
 	
-	@commands.command()
-	@commands.is_owner()
-	async def dm(self, ctx, member: discord.User, message: str, embeded: Optional[bool] = False):
-		kwargs = {'content': f"{message}\n\nSupport Server: <{support_server_link}>"} if not (embeded) else {'embed': discord.Embed(title="Connect 4", description=f"{message}\n\n{support_server}")}
-		await member.send(**kwargs)
+#	@commands.command()
+#	@commands.is_owner()
+#	async def dm(self, ctx, member: discord.User, message: str, embeded: Optional[bool] = False):
+#		kwargs = {'content': f"{message}\n\nSupport Server: <{support_server_link}>"} if not (embeded) else {'embed': discord.Embed(title="Connect 4", description=f"{message}\n\n{support_server}")}
+#		await member.send(**kwargs)
 	
 
 	@commands.command(aliases=['t'])
