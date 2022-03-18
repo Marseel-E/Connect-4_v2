@@ -1,22 +1,25 @@
-from discord import Embed
-import slash_util as slash
-from typing import Optional, Literal
+from typing import Optional, Literal, TYPE_CHECKING
+from discord.app_commands import command, describe
+from discord.app_commands import command
+from discord import Embed, Interaction
+from discord.ext.commands import Cog
 
-from database.main import *
-from .play_slash import Backend
+from database import get_user, fetch_users, User, Game
+from uitls import test_server
+
+if TYPE_CHECKING:
+	from .play_slash import Backend
 
 
-class Game_slash(slash.Cog):
+class Game_slash(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	@slash.describe(leaderboard_type="Wins, loses, or Draws")
-	async def leaderboard(self, ctx : slash.Context, leaderboard_type : Literal['wins', 'loses', 'draws'] = 'wins'):
+	@command(guild=test_server)
+	@describe(leaderboard_type="Wins, loses, or Draws")
+	async def leaderboard(self, interaction: Interaction, leaderboard_type: Literal['wins', 'loses', 'draws'] = 'wins'):
 		users = {}
-
 		for user in [user for user in User.find(User.ID != '0').all()]:
 			users[user.ID] = user.stats[leaderboard_type]
 
@@ -28,27 +31,26 @@ class Game_slash(slash.Cog):
 
 			user = await self.bot.fetch_user(i[0])
 			
-			if i[0] == str(ctx.author.id):
-				user = f"**[{user}](https://discord.com/channels/{ctx.guild.id}/{ctx.channel.id})**"
+			if i[0] == str(interaction.user.id):
+				user = f"**[{user}](https://discord.com/channels/{interaction.guild.id}/{interaction.channel.id})**"
 			
 			description += f"{users.index(i)+1}. **{user}** - `{i[1]}`\n"
 
-		user = User.find(User.ID == str(ctx.author.id)).first() if str(ctx.author.id) in fetch_users() else User(ID=str(ctx.author.id), coins=1000).save()
+		user = get_user(interaction.user.id)
 
 		embed = Embed(title=f"Leaderboard - {leaderboard_type.capitalize()}", description=description, color=int("5261f8", 16))
-		embed.set_footer(text=f"Your rank: {users.index((str(ctx.author.id), user.stats[leaderboard_type])) + 1}", icon_url=ctx.author.avatar.url)
+		embed.set_footer(text=f"Your rank: {users.index((str(interaction.user.id), user.stats[leaderboard_type])) + 1}", icon_url=interaction.user.avatar.url)
 
-		await ctx.send(embed=embed)
+		await interaction.response.send_message(embed=embed)
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	async def board(self, ctx : slash.Context):
-		if str(ctx.author.id) not in fetch_users(): return
+	@command(guild=test_server)
+	async def board(self, interaction: Interaction):
+		if str(interaction.user.id) not in fetch_users(): return
 
-		user = User.find(User.ID == str(ctx.author.id)).first()
+		user = User.find(User.ID == str(interaction.user.id)).first()
 
-		if not user.playing: await ctx.send(f"{ctx.author.mention}, Your not playing.", ephemeral=True); return
+		if not user.playing: await interaction.response.send_message(f"{interaction.user.mention}, Your not playing.", ephemeral=True); return
 		
 		game = Game.find(Game.ID == user.ID).first()
 		member = User.find(User.ID == game.players[1]).first()
@@ -61,7 +63,7 @@ class Game_slash(slash.Cog):
 		turn_user = await self.bot.fetch_user(int(game.turn))
 		embed.add_field(name="Turn:", value=turn_user.mention, inline=False)
 		
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 def setup(bot):

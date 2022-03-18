@@ -1,14 +1,14 @@
-from discord import Embed, ui, ButtonStyle, Interaction, SelectOption
-import slash_util as slash
+from discord import Embed, ButtonStyle, Interaction, SelectOption
+from discord.app_commands import command
+from discord.ext.commands import Cog
+from discord.ui import View, Select
 from typing import Literal
 
-from backend.tools import *
-from backend.items import items as all_items
-
-from database.main import *
+from database import User, get_user, fetch_users
+from utils import items as all_items, Color, test_server
 
 
-class Disc_placements(ui.Select):
+class Disc_placements(Select):
 	def __init__(self):
 		options = [
 			SelectOption(label="Primary", description="Set this disc as your primary disc."),
@@ -17,41 +17,41 @@ class Disc_placements(ui.Select):
 
 		super().__init__(placeholder="Primary or Secondary?", min_values=1, max_values=1, options=options)
 
-	async def callback(self,interaction : Interaction):
+	async def callback(self,interaction: Interaction):
 		self.view.primary_disc = True if self.values[0].lower() == "primary" else False
 		self.view.stop()
 
 
-class Select_item(ui.Select):
+class Select_item(Select):
 	def __init__(self, user, category):
 		options = [SelectOption(label=item.replace('_', ' ').capitalize(), description="") for item in user.inventory[category] if not (all_items[category][item]['icon'] in [user.primary_disc, user.secondary_disc, user.background, user.embed_color])]
 
 		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
 
-	async def callback(self, interaction : Interaction):
+	async def callback(self, interaction: Interaction):
 		self.view.value = self.values[0].lower().replace(' ', '_')
 		self.view.stop()
 
 
-class Inv_view(ui.View):
+class Inv_view(View):
 	def __init__(self, user):
 		super().__init__()
 		self.value = None
 		self.primary_disc = True
 		self.user = user
 
-	async def interaction_check(self, interaction : Interaction):
+	async def interaction_check(self, interaction: Interaction):
 		return (str(interaction.user.id) == self.user.ID)
 
 
-class Inv_slash(slash.Cog):
+class Inv_slash(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-# guild_id=843994109366501376
-	@slash.slash_command()
-	async def inventory(self, ctx : slash.Context, category : Literal['Discs', 'Backgrounds']):
-		user = User.find(User.ID == str(ctx.author.id)).first() if str(ctx.author.id) in fetch_users() else User(ID=str(ctx.author.id)).save()
+
+	@command(guild=test_server)
+	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
+		user = get_user(interaction.user.id)
 		category = category.lower().replace(' ', '_')
 
 		items = ""
@@ -60,12 +60,12 @@ class Inv_slash(slash.Cog):
 
 		embed = Embed(title="Inventory", description=items, color=Color.default)
 
-		if (User(ID="0").inventory[category] == user.inventory[category]): await ctx.send(embed=embed, ephemeral=True); return
+		if (User(ID="0").inventory[category] == user.inventory[category]): await interaction.response.send_message(embed=embed, ephemeral=True); return
 		
 		view = Inv_view(user)
 		view.add_item(Select_item(user, category))
 
-		msg = await ctx.send(embed=embed, view=view)
+		msg = await interaction.response.send_message(embed=embed, view=view)
 		await view.wait()
 
 		if view.value == None: await msg.delete(); return
@@ -89,7 +89,7 @@ class Inv_slash(slash.Cog):
 		if (category == "backgrounds"): user.update(background=new_item); print(18)
 
 		await msg.delete()
-		await ctx.send(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
+		await interaction.response.send_message(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
 
 
 def setup(bot):

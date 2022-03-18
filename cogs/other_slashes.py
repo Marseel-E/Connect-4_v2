@@ -1,26 +1,25 @@
-from discord import Embed
-import slash_util as slash
+from discord.app_commands import command, describe
+from discord import Embed, Interaction
+from discord.ext.commands import Cog
 
-from database.main import *
-from backend.tools import *
+from database import fetch_users, User
+from utils import default_bot, support_server, Color, test_server
 
 
-class Other_slashes(slash.Cog):
+class Other_slashes(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	@slash.describe(hex_code="A hex code")
-	async def color(self, ctx : slash.Context, hex_code : str):
+	@command(guild=test_server)
+	@describe(hex_code="A hex code")
+	async def color(self, interaction: Interaction, hex_code: str):
 		embed = Embed(title=hex_code, color=int(hex_code, 16))
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	async def stats(self, ctx : slash.Context):
+	@command(guild=test_server)
+	async def stats(self, interaction: Interaction):
 		owner = await self.bot.fetch_user(470866478720090114)
 		users = fetch_users()
 
@@ -41,29 +40,27 @@ class Other_slashes(slash.Cog):
 		embed.add_field(name="Games:", value=f"`{games}`", inline=False)
 		embed.add_field(name=f"Emojis: `({len(self.bot.emojis)})`", value=''.join(emojis[:30]), inline=False)
 
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command(name="bug-report")
-	@slash.describe(description="A brief description of the problem")
-	async def bug_report(self, ctx : slash.Context, description : str):
+	@command(name="bug-report", guild=test_server)
+	@describe(description="A brief description of the problem")
+	async def bug_report(self, interaction: Interaction, description: str):
 		embed = Embed(title=":warning: Bug :warning:", description=description, color=Color.red)
-		embed.set_footer(text=f"ID: {ctx.author.id}")
+		embed.set_footer(text=f"ID: {interaction.user.id}")
 
 		channel = await self.bot.fetch_channel(855139711554289674)
 		await channel.send(embed=embed)
 		
 		embed = Embed(description=f"Thanks for reaching out, Your report has been sent.\nPlease be patient while waiting for a response from our support team.\nVisit our {support_server} for urgent help.", color=Color.green)
 		
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	async def permissions(self, ctx : slash.Context):
-		if check_permission(ctx, "manage_guild"):
-			await ctx.send(f":warning: `manage_guild` permission is required for this command", ephemeral=True)
+	@command(guild=test_server)
+	async def permissions(self, interaction: Interaction):
+		if not (True in [role.permissions.manage_guild for role in interaction.user.roles]):
+			await interaction.response.send_message(":warning: `manage_guild` permission is required for this command", ephemeral=True)
 			return
 
 		required = ""
@@ -76,7 +73,7 @@ class Other_slashes(slash.Cog):
 		required_perms = ["add_reactions", "embed_links", "external_emojis", "read_messages", "send_messages"]
 		optional_perms = ["attach_files", "change_nickname", "create_instant_invite", "manage_messages", "read_message_history"]
 
-		perms = list(ctx.guild.me.guild_permissions)
+		perms = list(interaction.guild.me.guild_permissions)
 
 		for perm in perms:
 			if (perm[1]):
@@ -99,17 +96,15 @@ class Other_slashes(slash.Cog):
 		embed.add_field(name=f":white_check_mark: Required: `({required_amount}/{len(required_perms)})`", value=required, inline=False)
 		embed.add_field(name=f":ballot_box_with_check: Optional: `({optional_amount}/{len(optional_perms)})`", value=optional, inline=False)
 
-		if (other != ""):
-			embed.add_field(name=f":no_entry_sign: Not required: `({other_amount})`", value=other, inline=False)
+		if (other != ""): embed.add_field(name=f":no_entry_sign: Not required: `({other_amount})`", value=other, inline=False)
 
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-	# guild_id=879153063036858428
-	@slash.slash_command()
-	async def invite(self, ctx : slash.Context):
+	@command(guild=test_server)
+	async def invite(self, interaction: Interaction):
 		embed = Embed(title="Links", description=f"**{default_bot}**\n**{support_server}**", color=Color.default)
-		await ctx.send(embed=embed, ephemeral=True)
+		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 def setup(bot):

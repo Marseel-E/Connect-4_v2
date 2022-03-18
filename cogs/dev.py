@@ -1,12 +1,10 @@
 import discord, sys, traceback, typing, os, asyncio
 from discord.ext import commands
-from io import StringIO
 from typing import Optional
+from io import StringIO
 
-from backend.tools import *
-from backend.items import items as all_items
-
-from database.main import *
+from database import User, fetch_users, Game
+from utils import items as all_items, Color
 
 
 def is_dev(ctx): return ctx.author.id == 470866478720090114

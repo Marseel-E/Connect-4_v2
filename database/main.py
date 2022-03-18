@@ -1,10 +1,15 @@
-from redis import Redis
+from __future__ import annotations
 
 from redis_om import (HashModel, JsonModel, Field, Migrator)
 from typing import Optional, Union
+from dotenv import load_dotenv
 from pprint import pprint
+from redis import Redis
+from os import environ
 
-redis = Redis(host='redis-11026.c241.us-east-1-4.ec2.cloud.redislabs.com', port=11026, db=0, password="xdaBgyVkr6gELOBNKtPvh8cxbX3NSc5Y")
+load_dotenv('../.env')
+
+redis = Redis(host=environ.get("DB_HOST"), port=environ.get("DB_PORT"), db=environ.get("DB_N"), password=environ.get("DB_PASSWORD"))
 
 OWNER = '470866478720090114'
 
@@ -26,6 +31,7 @@ class User(JsonModel):
 	class Meta:
 		database = redis
 
+
 class Game(JsonModel):
 	ID          : str = Field(index=True)
 	players     : Optional[list] = []
@@ -34,12 +40,15 @@ class Game(JsonModel):
 	board       : Optional[list] = [['0']*7]*6
 	status      : Optional[str] = None
 	message     : Optional[str] = None
+
 	class Meta:
 		database = redis
+
 
 class Guild(HashModel):
 	ID     : str = Field(index=True)
 	prefix : Optional[str] = 'c-'
+	
 	class Meta:
 		database = redis
 
@@ -47,14 +56,12 @@ class Guild(HashModel):
 Migrator().run()
 
 
-def fetch_users():
-	return [user.ID for user in User.find(User.ID != '0').all()]
+def fetch_users() -> list: return [user.ID for user in User.find(User.ID != '0').all()]
+def fetch_guilds() -> list: return [guild.ID for guild in Guild.find(Guild.ID != '0').all()]
+def fetch_games() -> list: return [game.ID for game in Game.find(Game.ID != '0').all()]
 
-def fetch_guilds():
-	return [guild.ID for guild in Guild.find(Guild.ID != '0').all()]
+def get_user(ID: str) -> User: return User.find(User.ID == str(ID)).first() if (str(ID) in fetch_users()) else User(ID=str(ID)).save()
 
-def fetch_games():
-	return [game.ID for game in Game.find(Game.ID != '0').all()]
 
 if __name__ == '__main__':
 	while True:

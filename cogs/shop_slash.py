@@ -1,14 +1,14 @@
-from discord import Embed, ui, Interaction, SelectOption
+from discord import Embed, Interaction, SelectOption
+from discord.app_commands import command
+from discord.ext.commands import Cog
+from discord.ui import View, Select
 from typing import Literal
-import slash_util as slash
 
-from backend.items import items as all_items
-from backend.tools import *
-
-from database.main import *
+from database import User, fetch_users
+from utils import items as all_items, Color, test_server
 
 
-class Buy_dropdown(ui.Select):
+class Buy_dropdown(Select):
 	def __init__(self, user, category):
 		self.user = user
 		self.category = category
@@ -32,7 +32,7 @@ class Buy_dropdown(ui.Select):
 		self.view.stop()
 
 
-class Shop_view(ui.View):
+class Shop_view(View):
 	def __init__(self, user, category):
 		super().__init__()
 		self.user = user
@@ -43,14 +43,14 @@ class Shop_view(ui.View):
 		return (str(interaction.user.id) == self.user.ID)
 
 
-class Shop_slash(slash.Cog):
+class Shop_slash(Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
 
-	@slash.slash_command()
-	async def shop(self, ctx : slash.Context, category : Literal['Discs', 'Backgrounds']):
-		user = User.find(User.ID == str(ctx.author.id)).first() if (str(ctx.author.id) in fetch_users()) else User(ID=str(ctx.author.id)).save()
+	@command(guild=test_server)
+	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
+		user = User.find(User.ID == str(interaction.user.id)).first() if (str(interaction.user.id) in fetch_users()) else User(ID=str(interaction.user.id)).save()
 
 		embed = Embed(title=f"{category} shop", description=f"Coins: {user.coins} :coin:\n\n", color=Color.default)
 
@@ -62,10 +62,10 @@ class Shop_slash(slash.Cog):
 
 			embed.description += f"{value['icon']} - {name} `({value['price']}`:coin:`)`\n"
 
-		if (user.coins <= 999): await ctx.send(embed=embed, ephemeral=True); return
+		if (user.coins <= 999): await interaction.response.send_message(embed=embed, ephemeral=True); return
 
 		view = Shop_view(user, category.lower())
-		msg = await ctx.send(embed=embed, view=view)
+		msg = await interaction.response.send_message(embed=embed, view=view)
 		await view.wait()
 		await msg.delete()
 

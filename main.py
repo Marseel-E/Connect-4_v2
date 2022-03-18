@@ -1,66 +1,72 @@
-import discord, os, random, typing, topgg
-import slash_util as slash
-from discord.ext import commands
-
-from database.main import *
-
+from discord import Status, Game, Intents
+from discord.ext.commands import Bot
+from os import environ, listdir
 from dotenv import load_dotenv
-load_dotenv('.env')
+from topgg import DBLClient
+from random import randint
+
+from database import User, fetch_users
+from utils import test_server
 
 
-intents = discord.Intents.default()
-bot = slash.Bot(command_prefix="c-", case_sensitive=True, intents=intents, help_command=None)
-
-@bot.event
-async def on_ready():
-    print("running...")
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game("c-help"))
-
-
-@bot.event
-async def on_message(message):
-    if (message.author.bot): return
-
-    if bot.user.mentioned_in(message): await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know."); return
-
-    users = fetch_users()
-    if str(message.author.id) in users:
-        user = User.find(User.ID == str(message.author.id)).first()
-        
-        if user.exp >= (user.level * 4.231) * 100:
-            user.update(exp=0)
-            user.update(level=user.level + 1)
-            
-            coins = random.randint(100,1000)
-            user.update(coins=user.coins + coins)
-            
-            await message.channel.send(f":tada: LEVEL UP! :tada:\nLevel: {user.level + 1}\nCoins: {user.coins + 1}")
-
-    await bot.process_commands(message)
+class Connect4(Bot):
+	def __init__(self):
+		self.command_prefix = "c-"
+		self.case_sensitive = True
+		self.intents = Intents.default()
+		self.help_command = None
 
 
-bot.topggpy = topgg.DBLClient(bot, os.environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
-
-@bot.event
-async def on_autopost_success():
-    print(f"Posted server count ({bot.topggpy.guild_count}), shard count ({bot.shard_count})")
+	async def on_ready(self):
+		print("running...")
+		await self.change_presence(status=Status.online, activity=Game("c-help"))
 
 
-bot.remove_command("help")
-@bot.command(aliases=["?", "h"])
-async def help(ctx):
-    await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know.")
+	async def on_message(self, message):
+		if (message.author.bot): return
+
+		if self.user.mentioned_in(message):
+			await message.channel.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know.")
+			return
+
+		if str(message.author.id) in fetch_users():
+			user = User.find(User.ID == str(message.author.id)).first()
+			
+			if user.exp >= (user.level * 4.231) * 100:
+				user.update(exp=0)
+				user.update(level=user.level + 1)
+				
+				coins = randint(100,1000)
+				user.update(coins=user.coins + coins)
+				
+				await message.channel.send(f":tada: LEVEL UP! :tada:\nLevel: {user.level + 1}\nCoins: {user.coins + 1}")
+
+		await self.process_commands(message)
+
+
+	self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
+	async def on_autopost_success(self): print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
+
+
+	async def setup_hook(self):
+		for file in listdir("cogs"):
+			if file.endswith(".py"):
+				try: await self.load_extension(f"cogs.{file[:-3]}")
+				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
+				else: print(f"[{file[:-3]}]: Loaded..\n")
+
+		await self.tree.sync(guild=test_server)
 
 
 if __name__ == ('__main__'):
-    for file in os.listdir("cogs"):
-        if file.endswith(".py"):
-            try:
-                bot.load_extension(f"cogs.{file[:-3]}")
-            except Exception as e:
-                print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
-            else:
-                print(f"[{file[:-3]}]: Loaded..\n")
+	bot = Connect4()
 
 
-bot.run(os.environ.get("TOKEN"))
+	bot.remove_command("help")
+	@bot.command(aliases=["?", "h"])
+	async def help(ctx):
+		await ctx.send("Type `/` and all of Connect 4's slash commands should appear.\nIf they don't then you have to reinvite the bot, you can do that by pressing on the bot and clicking " + '"Add To Server"' + " and selecting your server. If you're not the server owner please let them know.")
+
+
+	load_dotenv('.env')
+	bot.run(environ.get("TOKEN"))
