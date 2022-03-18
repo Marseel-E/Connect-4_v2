@@ -13,6 +13,16 @@ class Connect4(Bot):
 	def __init__(self):
 		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None)
 
+		
+	async def setup_hook(self):
+		for file in listdir("cogs"):
+			if file.endswith(".py"):
+				try: await self.load_extension(f"cogs.{file[:-3]}")
+				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
+				else: print(f"[{file[:-3]}]: Loaded..\n")
+
+		await self.tree.sync(guild=test_server)
+		
 
 	async def on_ready(self):
 		print("running...")
@@ -43,16 +53,6 @@ class Connect4(Bot):
 
 	# self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
 	# async def on_autopost_success(self): print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
-
-
-	async def setup_hook(self):
-		for file in listdir("cogs"):
-			if file.endswith(".py"):
-				try: await self.load_extension(f"cogs.{file[:-3]}")
-				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
-				else: print(f"[{file[:-3]}]: Loaded..\n")
-
-		await self.tree.sync(guild=test_server)
 
 
 if __name__ == ('__main__'):
