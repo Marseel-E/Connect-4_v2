@@ -14,19 +14,19 @@ class Connect4(Bot):
 		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None)
 
 		
-	async def setup_hook(self):
-		for file in listdir("cogs"):
-			if file.endswith(".py"):
-				try: await self.load_extension(f"cogs.{file[:-3]}")
-				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
-				else: print(f"[{file[:-3]}]: Loaded..\n")
-
-		await self.tree.sync(guild=test_server)
-		
-
 	async def on_ready(self):
-		print("running...")
 		await self.change_presence(status=Status.online, activity=Game("c-help"))
+
+		async def setup_hook(self):
+			for file in listdir("cogs"):
+				if file.endswith(".py"):
+					try: await self.load_extension(f"cogs.{file[:-3]}")
+					except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
+					else: print(f"[{file[:-3]}]: Loaded..\n")
+
+			await self.tree.sync(guild=test_server)
+
+		print("running...")
 
 
 	async def on_message(self, message):
