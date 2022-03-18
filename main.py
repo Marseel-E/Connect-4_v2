@@ -44,8 +44,8 @@ class Connect4(Bot):
 		await self.process_commands(message)
 
 
-	self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
-	async def on_autopost_success(self): print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
+	# self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
+	# async def on_autopost_success(self): print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
 
 
 	async def setup_hook(self):
