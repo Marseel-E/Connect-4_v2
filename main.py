@@ -11,10 +11,7 @@ from utils import test_server
 
 class Connect4(Bot):
 	def __init__(self):
-		self.command_prefix = "c-"
-		self.case_sensitive = True
-		self.intents = Intents.default()
-		self.help_command = None
+		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None)
 
 
 	async def on_ready(self):
