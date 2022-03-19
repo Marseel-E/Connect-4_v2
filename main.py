@@ -66,4 +66,4 @@ if __name__ == ('__main__'):
 
 
 	load_dotenv('.env')
-	bot.run(environ.get("TOKEN"))
+	bot.run(environ.get("DEV_TOKEN"))
