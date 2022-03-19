@@ -45,7 +45,9 @@ class Select_item(Select):
 
 	async def callback(self, interaction: Interaction):
 		new_item = all_items[self.category][self.values[0].lower().replace(' ', '_')]['icon']
-		
+	
+		await interaction.response.send_message("Loading...", ephemeral=True)
+
 		if self.category == 'discs':
 			view = Disc_placement(self.user, new_item)
 			await interaction.edit_original_message(content="Where?", embed=None, view=view)
@@ -89,46 +91,6 @@ class Inv_slash(Cog):
 		if not (User(ID="0").inventory[category] == user.inventory[category]): kwargs['custom_children'] = [Select_item(user, category)]
 
 		await Paginator(**kwargs).start(True)
-
-
-
-
-		# items = ""
-		# for item in user.inventory[category]:
-		# 	items += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
-
-		# embed = Embed(title="Inventory", description=items, color=Color.default)
-
-		# if (User(ID="0").inventory[category] == user.inventory[category]): await interaction.response.send_message(embed=embed, ephemeral=True); return
-		
-		# view = Inv_view(user)
-		# view.add_item(Select_item(user, category))
-
-		# msg = await interaction.response.send_message(embed=embed, view=view)
-		# await view.wait()
-
-		# if view.value == None: await msg.delete(); return
-
-		# new_item = all_items[category][view.value]['icon']
-		# if (category == "discs"):
-		# 	view = Inv_view(user)
-		# 	view.add_item(Disc_placements())
-
-		# 	await msg.edit(content="Where?", embed=None, view=view)
-		# 	await view.wait()
-
-		# 	if (view.primary_disc):
-		# 		user.update(primary_disc=new_item)
-		# 		placement = "primary "
-
-		# 	else:
-		# 		user.update(secondary_disc=new_item)
-		# 		placement = "seconadry "
-
-		# if (category == "backgrounds"): user.update(background=new_item); print(18)
-
-		# await msg.delete()
-		# await interaction.response.send_message(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
 
 
 async def setup(bot):
