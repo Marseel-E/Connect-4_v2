@@ -41,11 +41,10 @@ class Select_item(Select):
 		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
 
 	async def callback(self, interaction: Interaction):
-		value = self.values[0].lower().replace(' ', '_')
-		new_item = all_items[category][value]['icon']
+		new_item = all_items[category][self.values[0].lower().replace(' ', '_')]['icon']
 		
 		if category == 'discs':
-			view = Disc_placement(user)
+			view = Disc_placement(self.user)
 			await interaction.edit_original_message(content="Where?", embed=None, view=view)
 			await view.wait()
 
