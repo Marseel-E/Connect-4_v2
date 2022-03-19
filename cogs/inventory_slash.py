@@ -21,7 +21,7 @@ class Disc_placement(View):
 	async def primary(self, button: Button, interaction: Interaction):
 		self.user.update(primary_disc=self.new_item)
 
-		await interaction.response.edit_message(f"{self.new_item} is your new `primary disc`", ephemeral=True)
+		await interaction.response.send_message(f"{self.new_item} is your new `primary disc`", ephemeral=True)
 
 		self.stop()
 
@@ -29,7 +29,7 @@ class Disc_placement(View):
 	async def secondary(self, button: Button, interaction: Interaction):
 		self.user.update(secondary_disc=self.new_item)
 		
-		await interaction.response.edit_message(f"{self.new_item} is your new `secondary disc`", ephemeral=True)
+		await interaction.response.send_message(f"{self.new_item} is your new `secondary disc`", ephemeral=True)
 
 		self.stop()
 
