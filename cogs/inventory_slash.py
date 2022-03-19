@@ -47,7 +47,7 @@ class Select_item(Select):
 		new_item = all_items[self.category][self.values[0].lower().replace(' ', '_')]['icon']
 		
 		if self.category == 'discs':
-			view = Disc_placement(self.user)
+			view = Disc_placement(self.user, new_item)
 			await interaction.edit_original_message(content="Where?", embed=None, view=view)
 			await view.wait()
 
