@@ -64,7 +64,7 @@ class Inv_slash(Cog):
 
 	@command()
 	@guilds(test_server)
-	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
+	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds'] = 'Discs'):
 		user = get_user(interaction.user.id)
 		category = category.lower().replace(' ', '_')
 
@@ -75,7 +75,7 @@ class Inv_slash(Cog):
 				embed = Embed(title="Inventory", description="", color=Color.default)
 				if i > 0: pages.append(embed)
 
-			embed.description += f"{all_items[category][item]['icon'] - {item.replace('_', ' ').capitalize()}}\n"
+			embed.description += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
 
 		kwargs = {
 			'interaction': interaction,

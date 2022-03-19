@@ -39,7 +39,7 @@ class Shop_slash(Cog):
 
 	@command()
 	@guilds(test_server)
-	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
+	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds'] = 'Discs'):
 		user = get_user(interaction.user.id)
 
 		pages = []
