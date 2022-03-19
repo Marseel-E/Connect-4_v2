@@ -95,7 +95,7 @@ class Paginator:
 		kwargs = {'content': self.pages[view.current_page]} if not (embeded) else {'embed': self.pages[view.current_page]}
 		kwargs['view'] = view
 
-		msg = await self.interaction.send_message(**kwargs)
+		msg = await self.interaction.response.send_message(**kwargs)
 
 		await view.wait()
 
