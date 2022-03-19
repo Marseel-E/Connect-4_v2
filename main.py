@@ -11,21 +11,11 @@ from utils import test_server
 
 class Connect4(Bot):
 	def __init__(self):
-		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None)
+		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None, application_id=879152869541023784)
 
-		
+
 	async def on_ready(self):
 		await self.change_presence(status=Status.online, activity=Game("c-help"))
-
-		async def setup_hook(self):
-			for file in listdir("cogs"):
-				if file.endswith(".py"):
-					try: await self.load_extension(f"cogs.{file[:-3]}")
-					except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
-					else: print(f"[{file[:-3]}]: Loaded..\n")
-
-			await self.tree.sync(guild=test_server)
-
 		print("running...")
 
 
@@ -49,6 +39,16 @@ class Connect4(Bot):
 				await message.channel.send(f":tada: LEVEL UP! :tada:\nLevel: {user.level + 1}\nCoins: {user.coins + 1}")
 
 		await self.process_commands(message)
+
+
+	async def setup_hook(self):
+		for file in listdir("cogs"):
+			if file.endswith(".py"):
+				try: await self.load_extension(f"cogs.{file[:-3]}")
+				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
+				else: print(f"[{file[:-3]}]: Loaded..\n")
+
+		await self.tree.sync(guild=test_server)
 
 
 	# self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
