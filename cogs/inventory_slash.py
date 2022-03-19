@@ -36,23 +36,26 @@ class Disc_placement(View):
 
 class Select_item(Select):
 	def __init__(self, user, category):
+		self.user = user
+		self.category = category
+
 		options = [SelectOption(label=item.replace('_', ' ').capitalize(), description="") for item in user.inventory[category] if not (all_items[category][item]['icon'] in [user.primary_disc, user.secondary_disc, user.background, user.embed_color])]
 
 		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
 
 	async def callback(self, interaction: Interaction):
-		new_item = all_items[category][self.values[0].lower().replace(' ', '_')]['icon']
+		new_item = all_items[self.category][self.values[0].lower().replace(' ', '_')]['icon']
 		
-		if category == 'discs':
+		if self.category == 'discs':
 			view = Disc_placement(self.user)
 			await interaction.edit_original_message(content="Where?", embed=None, view=view)
 			await view.wait()
 
-		if category == 'backgrounds': self.user.update(background=new_item)
+		if self.category == 'backgrounds': self.user.update(background=new_item)
 
 		await interaction.delete_original_message()
 		
-		await interaction.response.send_message(f"{new_item} is your new `{view.value}{category[:-1]}`", ephemeral=True)
+		await interaction.response.send_message(f"{new_item} is your new `{view.value}{self.category[:-1]}`", ephemeral=True)
 
 		await self.view.stop()
 
@@ -77,7 +80,7 @@ class Inv_slash(Cog):
 
 			embed.description += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
 
-		if embed.description != "": pages.append(embed)
+		if (embed not in pages) and (embed.description != ""): pages.append(embed)
 
 		kwargs = {
 			'interaction': interaction,
