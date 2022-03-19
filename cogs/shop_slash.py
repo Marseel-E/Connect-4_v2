@@ -4,7 +4,7 @@ from discord.ext.commands import Cog
 from discord.ui import View, Select
 from typing import Literal
 
-from database import User, fetch_users
+from database import fetch_users, get_user
 from utils import items as all_items, Color, test_server, Paginator
 
 
