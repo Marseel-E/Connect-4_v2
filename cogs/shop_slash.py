@@ -55,7 +55,7 @@ class Shop_slash(Cog):
 
 			embed.description += f"{value['icon']} - {name} `({value['price']}`:coin:`)`\n"
 
-		if embed.description != f"Coins: {user.coins} :coin:\n\n": pages.append(embed)
+		if (embed.description != f"Coins: {user.coins} :coin:\n\n") and (embed not in pages): pages.append(embed)
 
 		kwargs = {
 			'interaction': interaction,
