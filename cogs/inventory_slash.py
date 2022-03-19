@@ -66,7 +66,7 @@ class Inv_slash(Cog):
 	@guilds(test_server)
 	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds'] = 'Discs'):
 		user = get_user(interaction.user.id)
-		category = category.lower().replace(' ', '_')
+		category = category.lower()
 
 
 		pages = []
@@ -76,6 +76,8 @@ class Inv_slash(Cog):
 				if i > 0: pages.append(embed)
 
 			embed.description += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
+
+		if embed.description != "": pages.append(embed)
 
 		kwargs = {
 			'interaction': interaction,
