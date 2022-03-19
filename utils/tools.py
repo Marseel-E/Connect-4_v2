@@ -19,4 +19,4 @@ default_bot = "[Bot](https://top.gg/bot/795099690609279006)"
 
 
 from discord import Object
-test_server = Object(id=879153063036858428)
+test_server = Object(id=843994109366501376)
