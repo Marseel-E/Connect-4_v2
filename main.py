@@ -11,7 +11,7 @@ from utils import test_server
 
 class Connect4(Bot):
 	def __init__(self):
-		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None, application_id=879152869541023784)
+		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None, application_id=environ.get("APP_ID"))
 
 
 	async def on_ready(self):
@@ -67,4 +67,4 @@ if __name__ == ('__main__'):
 
 
 	load_dotenv('.env')
-	bot.run(environ.get("DEV_TOKEN"))
+	bot.run(environ.get("TOKEN"))
