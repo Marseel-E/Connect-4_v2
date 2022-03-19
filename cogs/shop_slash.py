@@ -32,17 +32,6 @@ class Buy_dropdown(Select):
 		self.view.stop()
 
 
-class Shop_view(View):
-	def __init__(self, user, category):
-		super().__init__()
-		self.user = user
-
-		self.add_item(Buy_dropdown(self.user, category))
-
-	async def interaction_check(self, interaction : Interaction):
-		return (str(interaction.user.id) == self.user.ID)
-
-
 class Shop_slash(Cog):
 	def __init__(self, bot):
 		self.bot = bot
@@ -70,7 +59,7 @@ class Shop_slash(Cog):
 			'interaction': interaction,
 			'pages': pages
 		}
-		if not (user.coins <= 999): kwargs['custom_children'] = Shop_view(user, category.lower())
+		if not (user.coins <= 999): kwargs['custom_children'] = [Buy_dropdown(user, category.lower())]
 
 		await Paginator(**kwargs).start(True)
 
