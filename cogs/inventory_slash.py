@@ -45,13 +45,12 @@ class Select_item(Select):
 		
 		new_item = all_items[category][value]['icon']
 		
-		match category:
-			case 'discs':
-				view = Disc_placement(user)
-				await interaction.edit_original_message(content="Where?", embed=None, view=view)
-				await view.wait()
+		if category == 'discs':
+			view = Disc_placement(user)
+			await interaction.edit_original_message(content="Where?", embed=None, view=view)
+			await view.wait()
 
-			case 'backgrounds': self.user.update(background=new_item)
+		if category == 'backgrounds': self.user.update(background=new_item)
 
 		await interaction.delete_original_message()
 		
