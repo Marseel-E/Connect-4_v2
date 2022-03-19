@@ -48,6 +48,7 @@ class Connect4(Bot):
 				except Exception as e: print(f"[Main]: Failed to load '{file[:-3]}': {e}\n")
 				else: print(f"[{file[:-3]}]: Loaded..\n")
 
+		await self.tree.sync()
 		await self.tree.sync(guild=test_server)
 
 
