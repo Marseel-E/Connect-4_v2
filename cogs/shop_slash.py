@@ -5,7 +5,7 @@ from discord.ui import View, Select
 from typing import Literal
 
 from database import User, fetch_users
-from utils import items as all_items, Color, test_server
+from utils import items as all_items, Color, test_server, Paginator
 
 
 class Buy_dropdown(Select):
@@ -51,11 +51,14 @@ class Shop_slash(Cog):
 	@command()
 	@guilds(test_server)
 	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
-		user = User.find(User.ID == str(interaction.user.id)).first() if (str(interaction.user.id) in fetch_users()) else User(ID=str(interaction.user.id)).save()
+		user = get_user(interaction.user.id)
 
-		embed = Embed(title=f"{category} shop", description=f"Coins: {user.coins} :coin:\n\n", color=Color.default)
+		pages = []
+		for i, (key, value) in enumerate(all_items[category.lower()].items()):
+			if (i == 0) or ((i + 1) % 5 == 0):
+				embed = Embed(title=f"{category} shop", description=f"Coins: {user.coins} :coin:\n\n", color=Color.default)
+				if i > 0: pages.append(embed)
 
-		for key, value in all_items[category.lower()].items():
 			if (value['price'] <= 0): continue
 
 			name = f"**{key.replace('_', ' ').capitalize()}**"
@@ -63,12 +66,21 @@ class Shop_slash(Cog):
 
 			embed.description += f"{value['icon']} - {name} `({value['price']}`:coin:`)`\n"
 
-		if (user.coins <= 999): await interaction.response.send_message(embed=embed, ephemeral=True); return
+		kwargs = {
+			'interaction': interaction,
+			'pages': pages
+		}
+		if not (user.coins <= 999): kwargs['custom_children'] = Shop_view(user, category.lower())
 
-		view = Shop_view(user, category.lower())
-		msg = await interaction.response.send_message(embed=embed, view=view)
-		await view.wait()
-		await msg.delete()
+		await Paginator(**kwargs).start(True)
+
+
+		# if (user.coins <= 999): await interaction.response.send_message(embed=embed, ephemeral=True); return
+
+		# view = Shop_view(user, category.lower())
+		# msg = await interaction.response.send_message(embed=embed, view=view)
+		# await view.wait()
+		# await msg.delete()
 
 
 async def setup(bot):
