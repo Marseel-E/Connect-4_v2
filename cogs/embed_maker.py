@@ -8,7 +8,7 @@ from typing import Optional
 from utils import test_server
 
 
-class field_modal(Modal, title="Field Maker", timeout=300.0):
+class field_modal(Modal, title="Field Maker"):
 	name = TextInput(label="Name", min_length=1, max_length=256)
 	value = TextInput(label="Value", min_length=1, max_length=1024, style=TextStyle.paragraph)
 
