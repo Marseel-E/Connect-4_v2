@@ -5,7 +5,7 @@ from discord.ext.commands import Cog
 
 page = 1
 
-from utils import test_server
+from utils import test_server, Paginator
 
 
 class HTP_view(View):
@@ -64,19 +64,22 @@ class How_to_play(Cog):
 		embed_3.add_field(name="If your opponent doesn’t place their checker in the center column with the first move of the game:", value="that should be your initial move when it’s your turn because the space offers the best advantage in the game.", inline=False)
 		embed_3.set_image(url="https://cdn.discordapp.com/attachments/846981732246880296/862914134827466783/SmartSelect_20210709-002740_Discord-Beta.jpg")
 
-		while True:
-			global page
-			page_embed = [embed_1, embed_2, embed_3][page-1]
-			page_embed.set_footer(text=f"{page} / 3", icon_url=interaction.user.avatar.url)
+
+		await Paginator(interaction, [embed_1, embed_2, embed_3]).start(True)
+
+		# while True:
+		# 	global page
+		# 	page_embed = [embed_1, embed_2, embed_3][page-1]
+		# 	page_embed.set_footer(text=f"{page} / 3", icon_url=interaction.user.avatar.url)
 			
-			view = HTP_view(interaction.user, page)
-			view.next.disabled = True if (page >= 3) else False
-			view.previous.disabled = True if (page <= 1) else False
+		# 	view = HTP_view(interaction.user, page)
+		# 	view.next.disabled = True if (page >= 3) else False
+		# 	view.previous.disabled = True if (page <= 1) else False
 
-			await interaction.response.send_message(embed=page_embed, view=view, ephemeral=True)
-			await view.wait()
+		# 	await interaction.response.send_message(embed=page_embed, view=view, ephemeral=True)
+		# 	await view.wait()
 
-			if view.quit: break
+		# 	if view.quit: break
 
 
 async def setup(bot):
