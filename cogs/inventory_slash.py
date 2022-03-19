@@ -13,8 +13,6 @@ class Disc_placement(View):
 		self.user = user
 		self.new_item = new_item
 
-		self.value = ""
-
 	async def interaction_check(self, interaction: Interaction):
 		return (str(interaction.user.id) == self.user.ID)
 
@@ -22,14 +20,16 @@ class Disc_placement(View):
 	@button(label="Primary", style=ButtonStyle.blurple)
 	async def primary(self, button: Button, interaction: Interaction):
 		self.user.update(primary_disc=self.new_item)
-		self.value = "primary "
+
+		await interaction.response.edit_message(f"{self.new_item} is your new `primary disc`", ephemeral=True)
 
 		self.stop()
 
 	@button(label="Secondary", style=ButtonStyle.blurple)
 	async def secondary(self, button: Button, interaction: Interaction):
 		self.user.update(secondary_disc=self.new_item)
-		self.value = "secondary "
+		
+		await interaction.response.edit_message(f"{self.new_item} is your new `secondary disc`", ephemeral=True)
 
 		self.stop()
 
@@ -46,16 +46,14 @@ class Select_item(Select):
 	async def callback(self, interaction: Interaction):
 		new_item = all_items[self.category][self.values[0].lower().replace(' ', '_')]['icon']
 
-		await interaction.response.send_message("Loading", ephemeral=True)
-
 		if self.category == 'discs':
 			view = Disc_placement(self.user, new_item)
-			await interaction.response.edit_message(content="Where?", view=view)
+			await interaction.response.send_message(content="Where?", view=view, ephemeral=True)
 			await view.wait()
 
-		if self.category == 'backgrounds': self.user.update(background=new_item)
-		
-		await interaction.response.edit_message(f"{new_item} is your new `{view.value}{self.category[:-1]}`")
+		if self.category == 'backgrounds':
+			self.user.update(background=new_item)
+			await interaction.response.send_message(f"{new_item} is your new `background`", ephemeral=True)
 
 		await self.view.stop()
 
