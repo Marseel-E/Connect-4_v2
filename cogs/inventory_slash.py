@@ -1,25 +1,37 @@
 from discord import Embed, ButtonStyle, Interaction, SelectOption
 from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
-from discord.ui import View, Select
+from discord.ui import View, Select, button, Button
 from typing import Literal
 
 from database import User, get_user, fetch_users
-from utils import items as all_items, Color, test_server
+from utils import items as all_items, Color, test_server, Paginator
+
+class Disc_placement(View):
+	def __init__(self, user, new_item):
+		super().__init__()
+		self.user = user
+		self.new_item = new_item
+
+		self.value = ""
+
+	async def interaction_check(self, interaction: Interaction):
+		return (str(interaction.user.id) == self.user.ID)
 
 
-class Disc_placements(Select):
-	def __init__(self):
-		options = [
-			SelectOption(label="Primary", description="Set this disc as your primary disc."),
-			SelectOption(label="Secondary", description="Set this disc as your secondary disc."),
-		]
+	@button(label="Primary", style=ButtonStyle.blurple)
+	async def primary(self, button: Button, interaction: Interaction):
+		self.user.update(primary_disc=self.new_item)
+		self.value = "primary "
 
-		super().__init__(placeholder="Primary or Secondary?", min_values=1, max_values=1, options=options)
+		self.stop()
 
-	async def callback(self,interaction: Interaction):
-		self.view.primary_disc = True if self.values[0].lower() == "primary" else False
-		self.view.stop()
+	@button(label="Secondary", style=ButtonStyle.blurple)
+	async def secondary(self, button: Button, interaction: Interaction):
+		self.user.update(secondary_disc=self.new_item)
+		self.value = "secondary "
+
+		self.stop()
 
 
 class Select_item(Select):
@@ -29,19 +41,23 @@ class Select_item(Select):
 		super().__init__(placeholder="Select", min_values=1, max_values=1, options=options)
 
 	async def callback(self, interaction: Interaction):
-		self.view.value = self.values[0].lower().replace(' ', '_')
-		self.view.stop()
+		value = self.values[0].lower().replace(' ', '_')
+		
+		new_item = all_items[category][value]['icon']
+		
+		match category:
+			case 'discs':
+				view = Disc_placement(user)
+				await interaction.edit_original_message(content="Where?", embed=None, view=view)
+				await view.wait()
 
+			case 'backgrounds': self.user.update(background=new_item)
 
-class Inv_view(View):
-	def __init__(self, user):
-		super().__init__()
-		self.value = None
-		self.primary_disc = True
-		self.user = user
+		await interaction.delete_original_message()
+		
+		await interaction.response.send_message(f"{new_item} is your new `{view.value}{category[:-1]}`", ephemeral=True)
 
-	async def interaction_check(self, interaction: Interaction):
-		return (str(interaction.user.id) == self.user.ID)
+		await self.view.stop()
 
 
 class Inv_slash(Cog):
@@ -55,42 +71,62 @@ class Inv_slash(Cog):
 		user = get_user(interaction.user.id)
 		category = category.lower().replace(' ', '_')
 
-		items = ""
-		for item in user.inventory[category]:
-			items += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
 
-		embed = Embed(title="Inventory", description=items, color=Color.default)
+		pages = []
+		for i, (key, value) in enumerate(user.inventory[category].items()):
+			if (i == 0) or (i + 1 % 10 == 0):
+				embed = Embed(title="Inventory", description="", color=Color.default)
+				if i > 0: pages.append(embed)
 
-		if (User(ID="0").inventory[category] == user.inventory[category]): await interaction.response.send_message(embed=embed, ephemeral=True); return
+			embed.description += f"{value['icon'] - {key.replace('_', ' ').capitalize()}}\n"
+
+		kwargs = {
+			'interaction': interaction,
+			'pages': pages
+		}
+		if not (User(ID="0").inventory[category] == user.inventory[category]): kwargs['custom_children'] = [Select_item(user, category)]
+
+		await Paginator(**kwargs).start(True)
+
+
+
+
+		# items = ""
+		# for item in user.inventory[category]:
+		# 	items += f"{all_items[category][item]['icon']} - {item.replace('_', ' ').capitalize()}\n"
+
+		# embed = Embed(title="Inventory", description=items, color=Color.default)
+
+		# if (User(ID="0").inventory[category] == user.inventory[category]): await interaction.response.send_message(embed=embed, ephemeral=True); return
 		
-		view = Inv_view(user)
-		view.add_item(Select_item(user, category))
+		# view = Inv_view(user)
+		# view.add_item(Select_item(user, category))
 
-		msg = await interaction.response.send_message(embed=embed, view=view)
-		await view.wait()
+		# msg = await interaction.response.send_message(embed=embed, view=view)
+		# await view.wait()
 
-		if view.value == None: await msg.delete(); return
+		# if view.value == None: await msg.delete(); return
 
-		new_item = all_items[category][view.value]['icon']
-		if (category == "discs"):
-			view = Inv_view(user)
-			view.add_item(Disc_placements())
+		# new_item = all_items[category][view.value]['icon']
+		# if (category == "discs"):
+		# 	view = Inv_view(user)
+		# 	view.add_item(Disc_placements())
 
-			await msg.edit(content="Where?", embed=None, view=view)
-			await view.wait()
+		# 	await msg.edit(content="Where?", embed=None, view=view)
+		# 	await view.wait()
 
-			if (view.primary_disc):
-				user.update(primary_disc=new_item)
-				placement = "primary "
+		# 	if (view.primary_disc):
+		# 		user.update(primary_disc=new_item)
+		# 		placement = "primary "
 
-			else:
-				user.update(secondary_disc=new_item)
-				placement = "seconadry "
+		# 	else:
+		# 		user.update(secondary_disc=new_item)
+		# 		placement = "seconadry "
 
-		if (category == "backgrounds"): user.update(background=new_item); print(18)
+		# if (category == "backgrounds"): user.update(background=new_item); print(18)
 
-		await msg.delete()
-		await interaction.response.send_message(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
+		# await msg.delete()
+		# await interaction.response.send_message(f"{new_item} is your new `{placement}{category[:-1]}`", ephemeral=True)
 
 
 async def setup(bot):

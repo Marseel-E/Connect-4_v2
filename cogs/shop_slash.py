@@ -1,7 +1,7 @@
 from discord import Embed, Interaction, SelectOption
 from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
-from discord.ui import View, Select
+from discord.ui import Select
 from typing import Literal
 
 from database import fetch_users, get_user
@@ -44,7 +44,7 @@ class Shop_slash(Cog):
 
 		pages = []
 		for i, (key, value) in enumerate(all_items[category.lower()].items()):
-			if (i == 0) or ((i + 1) % 5 == 0):
+			if (i == 0) or ((i + 1) % 10 == 0):
 				embed = Embed(title=f"{category} shop", description=f"Coins: {user.coins} :coin:\n\n", color=Color.default)
 				if i > 0: pages.append(embed)
 
@@ -62,14 +62,6 @@ class Shop_slash(Cog):
 		if not (user.coins <= 999): kwargs['custom_children'] = [Buy_dropdown(user, category.lower())]
 
 		await Paginator(**kwargs).start(True)
-
-
-		# if (user.coins <= 999): await interaction.response.send_message(embed=embed, ephemeral=True); return
-
-		# view = Shop_view(user, category.lower())
-		# msg = await interaction.response.send_message(embed=embed, view=view)
-		# await view.wait()
-		# await msg.delete()
 
 
 async def setup(bot):
