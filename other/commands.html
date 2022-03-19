@@ -1,0 +1,167 @@
+<style>
+	.container {
+		width: 100%;
+		height: 100%;
+		padding: 1rem;
+
+		background: #222;
+		color: #fff;
+		font-family: sans-serif;
+		border-radius: 5px;
+		text-align: center;
+
+		overflow-y: auto;
+	}
+
+	.label {
+		letter-spacing: 1px;
+		color: hsl(135, 100%, 55%);
+	}
+
+	.commands ul {
+		width: 100%;
+		height: fit-content;
+		padding: 1rem;
+
+		list-style: none;
+
+		border-radius: 5px;
+		background-color: #333;
+	}
+
+	.commands ul li {
+		text-align: left;
+
+		position: relative;
+	}
+
+	.inline {
+		display: flex;
+		align-items: center;
+		gap: .75rem;
+	}
+
+	.name {
+		text-transform: uppercase;
+	}
+
+	.syntax {
+		padding: .35rem .45rem;
+
+		background-color: hsl(135, 100%, 55%);
+		border-radius: 2.5px;
+		letter-spacing: .5px;
+		color: #222;
+		font-weight: bold;
+	}
+
+	.commands ul > li::after {
+		content: "";
+
+		position: absolute;
+		top: .125rem;
+		left: 0;
+
+		width: 100%;
+		height: 3px;
+
+		border-radius: 3px;
+		background-color: #555;
+	}
+</style>
+
+
+<div class="container">
+	<section>
+		<h1 class="label">Game</h1>
+		<div class="commands">
+			<ul>
+				<li>
+					<div class="inline">
+						<h3 class="name">play</h3><span class="syntax">/play @member [bet=0]</span>
+					</div>
+					<p class="description">Start a game of Connect 4 against someone with an option to add a bet</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">board</h3><span class="syntax">/board</span>
+					</div>
+					<p class="description">Shows the current game board with a refrence to the original message, IF you're playing a game.</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">profile</h3><span class="syntax">/profile [@user]</span>
+					</div>
+					<p class="description">Shows your profile, or the specified user's profile</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">leaderboard</h3><span class="syntax">/leaderboard [type (wins, loses, draws) = wins]</span>
+					</div>
+					<p class="description">Shows the top 10 players based on the leaderboard type, and shows your rank</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">inventory</h3><span class="syntax">/inventory [category=discs]</span>
+					</div>
+					<p class="description">Shows your inventory based on the category, and allows you to use your items</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">shop</h3><span class="syntax">/shop [category=discs]</span>
+					</div>
+					<p class="description">Shows the shop based on the category, and allows you to buy items</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">how-to-play</h3><span class="syntax">/how-to-play [page=1]</span>
+					</div>
+					<p class="description">Shows a guide on how to use the bot and how to play Connect 4</p>
+				</li>
+			</ul>
+		</div>
+	</section>
+	<section>
+		<h1 class="label">Other</h1>
+		<div class="commands">
+			<ul>
+				<li>
+					<div class="inline">
+						<h3 class="name">embed</h3><span class="syntax">/embed [channel]</span>
+					</div>
+					<p class="description">Allows you to create an advanced embed, and send it to a specific channel if needed</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">bug-report</h3><span class="syntax">/bug-report description</span>
+					</div>
+					<p class="description">Sends a bug report to the support server</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">permissions</h3><span class="syntax">/permissions</span>
+					</div>
+					<p class="description">Shows the Required, Optional, & Unnecassery permissions the Bot has</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">stats</h3><span class="syntax">/stats</span>
+					</div>
+					<p class="description">Shows brief statistics about the bot</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">color</h3><span class="syntax">/color hex_code</span>
+					</div>
+					<p class="description">Shows what the color would look like in an embed</p>
+				</li>
+				<li>
+					<div class="inline">
+						<h3 class="name">invite</h3><span class="syntax">/invite</span>
+					</div>
+					<p class="description">Sends the Bot & Support Server invitation links</p>
+				</li>
+			</ul>
+		</div>
+	</section>
+</div>
