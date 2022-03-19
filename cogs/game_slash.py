@@ -16,7 +16,7 @@ class Game_slash(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	@describe(leaderboard_type="Wins, loses, or Draws")
 	async def leaderboard(self, interaction: Interaction, leaderboard_type: Literal['wins', 'loses', 'draws'] = 'wins'):
 		users = {}
@@ -45,7 +45,7 @@ class Game_slash(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	async def board(self, interaction: Interaction):
 		if str(interaction.user.id) not in fetch_users(): return
 

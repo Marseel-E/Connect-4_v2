@@ -12,7 +12,7 @@ class Other_slashes(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	@describe(hex_code="A hex code")
 	async def color(self, interaction: Interaction, hex_code: str):
 		embed = Embed(title=hex_code, color=int(hex_code, 16))

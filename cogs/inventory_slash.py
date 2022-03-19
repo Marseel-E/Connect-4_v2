@@ -50,7 +50,7 @@ class Inv_slash(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
 		user = get_user(interaction.user.id)
 		category = category.lower().replace(' ', '_')

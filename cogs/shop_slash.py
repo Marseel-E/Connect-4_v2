@@ -49,7 +49,7 @@ class Shop_slash(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
 		user = User.find(User.ID == str(interaction.user.id)).first() if (str(interaction.user.id) in fetch_users()) else User(ID=str(interaction.user.id)).save()
 

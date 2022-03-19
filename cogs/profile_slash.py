@@ -12,7 +12,7 @@ class Profile_slash(Cog):
 
 
 	@command()
-	@guilds(guild=test_server)
+	@guilds(test_server)
 	@describe(member="View another user's profile")
 	async def profile(self, interaction: Interaction, member: DUser = None):
 		discord_user = interaction.user or member
