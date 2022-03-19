@@ -77,7 +77,7 @@ class Paginator:
 	async def start(self, embeded: Optional[bool] = False):
 		assert (self.pages)
 
-		view = _view(self.interaction.author, self.pages, embeded)
+		view = _view(self.interaction.user, self.pages, embeded)
 
 		view.previous.disabled = True if (view.current_page <= 0) else False
 		view.next.disabled = True if (view.current_page + 1 >= len(self.pages)) else False

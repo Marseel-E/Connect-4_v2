@@ -1,7 +1,7 @@
 from discord import Embed, TextChannel, Interaction, ButtonStyle, TextStyle
 from discord.ui import View, button, Button, Modal, TextInput
 from discord.app_commands import command
-from dsicord.ext.commands import Cog
+from discord.ext.commands import Cog
 from asyncio import TimeoutError
 from typing import Optional
 
