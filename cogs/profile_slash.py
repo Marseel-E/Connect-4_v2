@@ -3,7 +3,7 @@ from discord.app_commands import command, describe, guilds
 from discord.ext.commands import Cog
 
 from database import fetch_users, get_user
-from uitls import test_server
+from utils import test_server
 
 
 class Profile_slash(Cog):

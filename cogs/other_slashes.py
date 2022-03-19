@@ -112,5 +112,5 @@ class Other_slashes(Cog):
 		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-def setup(bot):
-	bot.add_cog(Other_slashes(bot))
+async def setup(bot):
+	await bot.add_cog(Other_slashes(bot))

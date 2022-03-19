@@ -67,5 +67,5 @@ class Game_slash(Cog):
 		await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-def setup(bot):
-	bot.add_cog(Game_slash(bot))
+async def setup(bot):
+	await bot.add_cog(Game_slash(bot))
