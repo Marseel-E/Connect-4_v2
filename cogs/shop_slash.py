@@ -1,5 +1,5 @@
 from discord import Embed, Interaction, SelectOption
-from discord.app_commands import command
+from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
 from discord.ui import View, Select
 from typing import Literal
@@ -48,7 +48,8 @@ class Shop_slash(Cog):
 		self.bot = bot
 
 
-	@command(guild=test_server)
+	@command()
+	@guilds(guild=test_server)
 	async def shop(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
 		user = User.find(User.ID == str(interaction.user.id)).first() if (str(interaction.user.id) in fetch_users()) else User(ID=str(interaction.user.id)).save()
 

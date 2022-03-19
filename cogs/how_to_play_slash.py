@@ -1,6 +1,6 @@
 from discord import Interaction, Embed, ButtonStyle
 from discord.ui import View, Button, button
-from discord.app_commands import command
+from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
 
 page = 1
@@ -45,7 +45,8 @@ class How_to_play(Cog):
 		self.bot = bot
 
 
-	@command(name="how-to-play", guild=test_server)
+	@command(name="how-to-play")
+	@guilds(guild=test_server)
 	async def how_to_play(self, interaction: Interaction):
 		embed_1 = Embed(title="How To Play - Basics", description="Connect 4 is a definite classic. Playing against an opponent, you try to be the first to place four discs in a row on the game board. While figuring out game winning strategy can sometimes be challenge, the game is simple enough to play. If you're gearing up for your first game, you'll get the hang of it in no time, especially if you're familiar with Tic-Tac-Toe.\nConnect 4 has 7 columns and 6 rows to choose from. You can choose any of the columns, depending on your strategy. When its your turn you pick a column to drop your piece in.", color=int("5261f8", 16))
 		embed_1.add_field(name="You want to choose each move carefully because your opponent will have a turn after you.", value="Not only do they have a chance to thwart your strategy for four in row, your move can sometimes make it easier for them to get four of their checkers in a row.", inline=False)

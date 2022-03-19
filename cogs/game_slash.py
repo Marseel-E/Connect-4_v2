@@ -1,6 +1,5 @@
 from typing import Optional, Literal, TYPE_CHECKING
-from discord.app_commands import command, describe
-from discord.app_commands import command
+from discord.app_commands import command, describe, guilds
 from discord import Embed, Interaction
 from discord.ext.commands import Cog
 
@@ -16,7 +15,8 @@ class Game_slash(Cog):
 		self.bot = bot
 
 
-	@command(guild=test_server)
+	@command()
+	@guilds(guild=test_server)
 	@describe(leaderboard_type="Wins, loses, or Draws")
 	async def leaderboard(self, interaction: Interaction, leaderboard_type: Literal['wins', 'loses', 'draws'] = 'wins'):
 		users = {}
@@ -44,7 +44,8 @@ class Game_slash(Cog):
 		await interaction.response.send_message(embed=embed)
 
 
-	@command(guild=test_server)
+	@command()
+	@guilds(guild=test_server)
 	async def board(self, interaction: Interaction):
 		if str(interaction.user.id) not in fetch_users(): return
 

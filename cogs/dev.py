@@ -129,5 +129,5 @@ class Developer(commands.Cog):
 		else: await ctx.send(f"[{cog}]: Reloaded..")
 
 
-def setup(bot):
-	bot.add_cog(Developer(bot))
+async def setup(bot):
+	await bot.add_cog(Developer(bot))

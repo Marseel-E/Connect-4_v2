@@ -1,5 +1,5 @@
 from discord import Embed, ButtonStyle, Interaction, SelectOption
-from discord.app_commands import command
+from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
 from discord.ui import View, Select
 from typing import Literal
@@ -49,7 +49,8 @@ class Inv_slash(Cog):
 		self.bot = bot
 
 
-	@command(guild=test_server)
+	@command()
+	@guilds(guild=test_server)
 	async def inventory(self, interaction: Interaction, category: Literal['Discs', 'Backgrounds']):
 		user = get_user(interaction.user.id)
 		category = category.lower().replace(' ', '_')

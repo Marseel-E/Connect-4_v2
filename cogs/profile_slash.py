@@ -1,5 +1,5 @@
 from discord import Interaction, User as DUser, embed
-from discord.app_commands import command, describe
+from discord.app_commands import command, describe, guilds
 from discord.ext.commands import Cog
 
 from database import fetch_users, get_user
@@ -11,7 +11,8 @@ class Profile_slash(Cog):
 		self.bot = bot
 
 
-	@command(guild=test_server)
+	@command()
+	@guilds(guild=test_server)
 	@describe(member="View another user's profile")
 	async def profile(self, interaction: Interaction, member: DUser = None):
 		discord_user = interaction.user or member
