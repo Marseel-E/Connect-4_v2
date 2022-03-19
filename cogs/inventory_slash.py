@@ -46,14 +46,16 @@ class Select_item(Select):
 	async def callback(self, interaction: Interaction):
 		new_item = all_items[self.category][self.values[0].lower().replace(' ', '_')]['icon']
 
+		await interaction.response.send_message("Loading", ephemeral=True)
+
 		if self.category == 'discs':
 			view = Disc_placement(self.user, new_item)
-			await interaction.response.send_message(content="Where?", view=view, ephemeral=True)
+			await interaction.response.edit_message(content="Where?", view=view)
 			await view.wait()
 
 		if self.category == 'backgrounds': self.user.update(background=new_item)
 		
-		await interaction.response.send_message(f"{new_item} is your new `{view.value}{self.category[:-1]}`", ephemeral=True)
+		await interaction.response.edit_message(f"{new_item} is your new `{view.value}{self.category[:-1]}`")
 
 		await self.view.stop()
 
