@@ -55,7 +55,7 @@ class Select_item(Select):
 			self.user.update(background=new_item)
 			await interaction.response.send_message(f"{new_item} is your new `background`", ephemeral=True)
 
-		await self.view.stop()
+		self.view.stop()
 
 
 class Inv_slash(Cog):
