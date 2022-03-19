@@ -50,7 +50,7 @@ class Fields_view(View):
 		self.timeout = 60.0
 
 
-class embed_modal(Modal, title="Embed Maker", timeout=600.0):
+class embed_modal(Modal, title="Embed Maker"):
 	title = TextInput(label="Title", max_length=256, required=True)
 	description = TextInput(label="Description", max_length=4000, style=TextStyle.paragraph)
 	color = TextInput(label="Color", min_length=6, max_length=6, placeholder="hex code", default="000000")
