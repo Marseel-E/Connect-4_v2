@@ -70,12 +70,12 @@ class Inv_slash(Cog):
 
 
 		pages = []
-		for i, (key, value) in enumerate(user.inventory[category].items()):
+		for i, item in enumerate(user.inventory[category]):
 			if (i == 0) or (i + 1 % 10 == 0):
 				embed = Embed(title="Inventory", description="", color=Color.default)
 				if i > 0: pages.append(embed)
 
-			embed.description += f"{value['icon'] - {key.replace('_', ' ').capitalize()}}\n"
+			embed.description += f"{all_items[category][item]['icon'] - {item.replace('_', ' ').capitalize()}}\n"
 
 		kwargs = {
 			'interaction': interaction,
