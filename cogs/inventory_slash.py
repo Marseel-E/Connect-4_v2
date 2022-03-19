@@ -42,7 +42,6 @@ class Select_item(Select):
 
 	async def callback(self, interaction: Interaction):
 		value = self.values[0].lower().replace(' ', '_')
-		
 		new_item = all_items[category][value]['icon']
 		
 		if category == 'discs':
