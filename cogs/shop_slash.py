@@ -1,11 +1,12 @@
 from discord import Embed, Interaction, SelectOption
 from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
+from paginator import Paginator
 from discord.ui import Select
 from typing import Literal
 
 from database import fetch_users, get_user
-from utils import items as all_items, Color, test_server, Paginator
+from utils import items as all_items, Color, test_server
 
 
 class Buy_dropdown(Select):

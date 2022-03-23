@@ -1,11 +1,12 @@
 from discord import Embed, ButtonStyle, Interaction, SelectOption
+from discord.ui import View, Select, button, Button
 from discord.app_commands import command, guilds
 from discord.ext.commands import Cog
-from discord.ui import View, Select, button, Button
+from paginator import Paginator
 from typing import Literal
 
 from database import User, get_user, fetch_users
-from utils import items as all_items, Color, test_server, Paginator
+from utils import items as all_items, Color, test_server
 
 class Disc_placement(View):
 	def __init__(self, user, new_item):

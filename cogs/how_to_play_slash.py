@@ -1,11 +1,12 @@
 from discord import Interaction, Embed, ButtonStyle
-from discord.ui import View, Button, button
 from discord.app_commands import command, guilds
+from discord.ui import View, Button, button
 from discord.ext.commands import Cog
+from paginator import Paginator
 
 page = 1
 
-from utils import test_server, Paginator
+from utils import test_server
 
 
 class HTP_view(View):
