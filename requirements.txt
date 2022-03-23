@@ -4,3 +4,4 @@ git+https://github.com/Rapptz/discord.py
 python-dotenv
 humanize
 topggpy
+discord.py-paginator
