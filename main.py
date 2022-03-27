@@ -11,6 +11,7 @@ from utils import test_server
 
 class Connect4(Bot):
 	def __init__(self):
+		self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
 		super().__init__(command_prefix="c-", case_sensitive=True, intents=Intents.default(), help_command=None, application_id=environ.get("APP_ID"))
 
 
@@ -50,10 +51,10 @@ class Connect4(Bot):
 
 		await self.tree.sync()
 		await self.tree.sync(guild=test_server)
-
-
-	# self.topggpy = DBLClient(self, environ.get("DBL_TOKEN"), autopost=True, post_shard_count=False)
-	# async def on_autopost_success(self): print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
+	
+	
+	async def on_autopost_success(self):
+		print(f"Posted server count ({self.topggpy.guild_count}), shard count ({self.shard_count})")
 
 
 if __name__ == ('__main__'):
