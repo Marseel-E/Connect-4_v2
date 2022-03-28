@@ -21,7 +21,7 @@ class HTP_view(View):
 
 
 	@button(label="<", style=ButtonStyle.gray)
-	async def previous(self, button: Button, interaction: Interaction):
+	async def previous(self, interaction: Interaction, button: Button):
 		global page
 		
 		if page > 1:
@@ -31,7 +31,7 @@ class HTP_view(View):
 		self.stop()
 
 	@button(label=">", style=ButtonStyle.gray)
-	async def next(self, button: Button, interaction: Interaction):
+	async def next(self, interaction: Interaction, button: Button):
 		global page
 
 		if page < 3:
