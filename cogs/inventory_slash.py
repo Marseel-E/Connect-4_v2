@@ -19,7 +19,7 @@ class Disc_placement(View):
 
 
 	@button(label="Primary", style=ButtonStyle.blurple)
-	async def primary(self, button: Button, interaction: Interaction):
+	async def primary(self, interaction: Interaction, button: Button):
 		self.user.update(primary_disc=self.new_item)
 
 		await interaction.response.send_message(f"{self.new_item} is your new `primary disc`", ephemeral=True)
@@ -27,7 +27,7 @@ class Disc_placement(View):
 		self.stop()
 
 	@button(label="Secondary", style=ButtonStyle.blurple)
-	async def secondary(self, button: Button, interaction: Interaction):
+	async def secondary(self, interaction: Interaction, button: Button):
 		self.user.update(secondary_disc=self.new_item)
 		
 		await interaction.response.send_message(f"{self.new_item} is your new `secondary disc`", ephemeral=True)
