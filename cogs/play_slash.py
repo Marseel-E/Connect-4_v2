@@ -126,12 +126,12 @@ class Play_ask_view(View):
 		return (interaction.user.id == self.author.id)
 
 	@button(label="Accept", style=ButtonStyle.green)
-	async def accept(self, button: Button, interaction: Interaction):
+	async def accept(self, interaction: Interaction, button: Button):
 		self.value = "accept"
 		self.stop()
 
 	@button(label="Refuse", style=ButtonStyle.red)
-	async def refuse(self, button: Button, interaction: Interaction):
+	async def refuse(self, interaction: Interaction, button: Button):
 		self.value = "refuse"
 		self.stop()
 
@@ -148,7 +148,7 @@ class Play_view(View):
 		return (interaction.user.id == int(self.game.turn))
 
 	@select(placeholder="Play", min_values=1, max_values=1, options=[SelectOption(label=i, description=f"Row {i}") for i in range(1,8)])
-	async def move_select(self, select: Select, interaction: Interaction):
+	async def move_select(self, interaction: Interaction, select: Select):
 		move = int(select.values[0])-1
 
 		if (self.game.board[0][move] != '0'): self.rechoose = True
@@ -170,7 +170,7 @@ class Play_view(View):
 		self.stop()
 
 	@button(label="Quit", style=ButtonStyle.red)
-	async def quit(self, button: Button, interaction: Interaction):
+	async def quit(self, interaction: Interaction, button: Button):
 		self.quit = True
 
 		self.game.update(status="win")
