@@ -31,7 +31,7 @@ class Fields_view(View):
 
 
 	@button(label="Add field", style=ButtonStyle.blurple)
-	async def add_field(self, button : Button, interaction : Interaction):
+	async def add_field(self, interaction: Interaction, button: Button):
 		modal = field_modal()
 		await interaction.response.send_modal(modal)
 
